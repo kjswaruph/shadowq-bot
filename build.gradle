@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.swaruph'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation("net.dv8tion:JDA:5.2.1")
+    implementation 'org.slf4j:slf4j-simple:2.0.7'
+    implementation 'net.sourceforge.tess4j:tess4j:5.13.0'
+    implementation 'org.bytedeco:opencv:4.10.0-1.5.11'
+    implementation 'org.apache.commons:commons-csv:1.12.0'
+    implementation 'org.jetbrains:annotations:26.0.1'
+    implementation 'org.xerial:sqlite-jdbc:3.47.1.0'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
