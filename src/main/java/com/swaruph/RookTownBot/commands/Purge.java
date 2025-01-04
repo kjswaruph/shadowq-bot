@@ -2,7 +2,6 @@ package com.swaruph.RookTownBot.commands;
 
 import java.util.Objects;
 
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;

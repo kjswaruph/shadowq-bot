@@ -21,8 +21,6 @@ import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.swaruph.RookTownBot.model.Leaderboard;
 import com.swaruph.RookTownBot.model.ScoreboardPlayer;
 

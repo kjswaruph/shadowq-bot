@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class DiscordConfig {
-    private Properties properties = new Properties();
+    private final Properties properties = new Properties();
 
     public DiscordConfig() {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("config.properties")) {

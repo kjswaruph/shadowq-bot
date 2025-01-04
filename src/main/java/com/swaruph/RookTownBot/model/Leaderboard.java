@@ -2,8 +2,8 @@ package com.swaruph.RookTownBot.model;
 
 public class Leaderboard {
 
-    private String puuid;
-    private LeaderboardPlayer leaderboardPlayer;
+    private final String puuid;
+    private final LeaderboardPlayer leaderboardPlayer;
 
     public Leaderboard(String puuid, LeaderboardPlayer leaderboardPlayer){
         this.puuid = puuid;
