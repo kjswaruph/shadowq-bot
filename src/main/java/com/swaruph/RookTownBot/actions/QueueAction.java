@@ -1,15 +1,11 @@
-package com.swaruph.actions;
+package com.swaruph.RookTownBot.actions;
 
 import java.util.List;
 
-import com.swaruph.model.Queue;
-import com.swaruph.model.Rook;
+import com.swaruph.RookTownBot.model.Queue;
+import com.swaruph.RookTownBot.model.Rook;
 
 public class QueueAction {
-
-    public Queue getRooksQueue(Queue currentQueue) {
-        return currentQueue;
-    }
 
     public void addRookInQueue(Queue currentQueue, Rook user) {
         if (!currentQueue.isFull()) {
@@ -28,6 +24,8 @@ public class QueueAction {
         return currentQueue.contains(user);
     }
 
+
+
     public String getRooksList(Queue currentQueue) {
         if (currentQueue.size() == 0) {
             return "No one is in the queue yet";
@@ -39,4 +37,5 @@ public class QueueAction {
         }
         return playerList.toString();
     }
+
 }

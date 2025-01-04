@@ -1,4 +1,4 @@
-package com.swaruph.model;
+package com.swaruph.RookTownBot.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import net.dv8tion.jda.api.entities.User;
 
 public class Queue {
+
     private int queueId;
     private String queueName;
     private String queueType;
@@ -14,7 +15,7 @@ public class Queue {
     private List<Rook> queueMembers;
     private final int capacity = 10 ;
 
-    public Queue(int queueId) {
+    public Queue(int queueId){
         this.queueMembers = new ArrayList<>();
         this.queueId = queueId;
     }
