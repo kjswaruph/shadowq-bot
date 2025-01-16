@@ -40,19 +40,21 @@ RookTownBot is a Java-based Discord bot designed to manage queues for Valorant c
     cd RookTownBot
     ```
 
-2. Configure the database:
-    - Ensure SQLite is installed and accessible.
-    - Update the `DatabaseConfig` class with your database connection details.
+2. Create a config.properties files and add the following 
+    ```properties
+    BOT.TOKEN=YOUR_BOT_TOKEN
+    DB.URL=
+    HENRIK.DEV.KEY=YOUR-API-KEY
+    DOCKER.HUB.USERNAME=
+    DOCKER.HUB.PASSWORD=
+    ```
 
-3. Configure the bot:
-    - Update the `ValorantConfig` class with your Henrik Dev Valorant API token.
-
-4. Build the project:
+3. Build the project:
     ```sh
     gradle build
     ```
 
-5. Run the bot:
+4. Run the bot:
     ```sh
     gradle run
     ```
