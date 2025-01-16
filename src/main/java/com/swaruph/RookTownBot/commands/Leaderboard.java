@@ -53,8 +53,8 @@ public class Leaderboard implements ICommand {
         sb.append("<a:posSecond:1324247766024589352> ").append("<@").append(players.get(1).getDiscordId()).append("> \n");
         sb.append("<a:posThird:1324247878188662795> ").append("<@").append(players.get(2).getDiscordId()).append(">");
 
-        TableGenerator.generateTableImage(players, "src/main/resources/Images/leaderboard.png");
-        FileUpload image = FileUpload.fromData(new File("src/main/resources/Images/leaderboard.png"), "leaderboard.png");
+        TableGenerator tableGenerator = new TableGenerator(players, "/home/ubuntu/RookTownBot/images/leaderboard.png");
+        FileUpload image = FileUpload.fromData(new File("/home/ubuntu/RookTownBot/images/leaderboard.png"), "leaderboard.png");
 
         MessageEmbed embed = new EmbedBuilder()
                 .setTitle("Leaderboard")

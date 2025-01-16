@@ -181,7 +181,7 @@ public class StartQueue extends ListenerAdapter implements ICommand {
                             .queue();
                         hook.sendMessage("Queue ended").setEphemeral(true).queue();
                         TextChannel resultChannel = Objects.requireNonNull(event.getGuild()).getTextChannelById(1318190080049025064L);
-                        FileUpload file = FileUpload.fromData(new File("src/main/resources/Images/scoreboard_" + queueId + ".png"), "scoreboard_" + queueId + ".png");
+                        FileUpload file = FileUpload.fromData(new File("/home/ubuntu/RookTownBot/images/scoreboard_" + queueId + ".png"), "scoreboard_" + queueId + ".png");
                         MessageEmbed embed = new EmbedBuilder()
                                 .setTitle("Queue " + queue.getQueueId())
                                 .setDescription(customMatch.rounds(matchId) + "\n" + "Map: " + customMatch.getMatchMap(matchId) + "\n" + "Server: " + customMatch.getMatchRegion(matchId))

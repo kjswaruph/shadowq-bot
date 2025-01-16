@@ -160,11 +160,9 @@ public class CustomMatch {
         JsonArray rounds = matchData.get("rounds").getAsJsonArray();
         Map<String, Set<Integer>> playerKastRounds = new HashMap<>();
 
-        // Track surviving players by checking who's not in the kill feed each round
         for (int roundNum = 0; roundNum < rounds.size(); roundNum++) {
             Set<String> deadPlayersInRound = new HashSet<>();
 
-            // Get all kills for this round
             for (JsonElement killElement : kills) {
                 JsonObject kill = killElement.getAsJsonObject();
                 if (kill.get("round").getAsInt() == roundNum) {
@@ -172,14 +170,12 @@ public class CustomMatch {
                 }
             }
 
-            // Get all players from the round stats
             JsonObject round = rounds.get(roundNum).getAsJsonObject();
             JsonArray roundStats = round.getAsJsonArray("stats");
             for (JsonElement statElement : roundStats) {
                 JsonObject playerStat = statElement.getAsJsonObject();
                 String playerPuuid = playerStat.getAsJsonObject("player").get("puuid").getAsString();
 
-                // If player wasn't killed and wasn't AFK, they survived
                 if (!deadPlayersInRound.contains(playerPuuid) &&
                         !playerStat.get("was_afk").getAsBoolean()) {
                     playerKastRounds.putIfAbsent(playerPuuid, new HashSet<>());
@@ -188,17 +184,14 @@ public class CustomMatch {
             }
         }
 
-        // Process kills and assists
         for (JsonElement killElement : kills) {
             JsonObject kill = killElement.getAsJsonObject();
             int round = kill.get("round").getAsInt();
 
-            // Add killer contribution
             String killerPuuid = kill.getAsJsonObject("killer").get("puuid").getAsString();
             playerKastRounds.putIfAbsent(killerPuuid, new HashSet<>());
             playerKastRounds.get(killerPuuid).add(round);
 
-            // Add assistants contribution
             JsonArray assistants = kill.get("assistants").getAsJsonArray();
             for (JsonElement assistant : assistants) {
                 String assistantPuuid = assistant.getAsJsonObject().get("puuid").getAsString();
@@ -206,12 +199,10 @@ public class CustomMatch {
                 playerKastRounds.get(assistantPuuid).add(round);
             }
 
-            // Check for trade kills
             String victimPuuid = kill.getAsJsonObject("victim").get("puuid").getAsString();
             String victimTeam = kill.getAsJsonObject("victim").get("team").getAsString();
             int killTime = kill.get("time_in_round_in_ms").getAsInt();
 
-            // Look for trade kills in the next 5 seconds
             for (JsonElement potentialTradeElement : kills) {
                 JsonObject potentialTrade = potentialTradeElement.getAsJsonObject();
                 if (potentialTrade.get("round").getAsInt() != round)
@@ -219,14 +210,13 @@ public class CustomMatch {
 
                 int tradeTime = potentialTrade.get("time_in_round_in_ms").getAsInt();
                 if (tradeTime <= killTime)
-                    continue; // Skip kills that happened before
+                    continue;
                 if (tradeTime - killTime > 5000)
-                    break; // More than 5 seconds passed
+                    break;
 
                 JsonObject tradeKiller = potentialTrade.getAsJsonObject("killer");
                 JsonObject tradeVictim = potentialTrade.getAsJsonObject("victim");
 
-                // If the original killer was killed by someone on the victim's team
                 if (tradeVictim.get("puuid").getAsString().equals(killerPuuid) &&
                         tradeKiller.get("team").getAsString().equals(victimTeam)) {
                     playerKastRounds.putIfAbsent(victimPuuid, new HashSet<>());
@@ -236,7 +226,6 @@ public class CustomMatch {
             }
         }
 
-        // Calculate final percentages
         Map<String, Integer> playerKast = new HashMap<>();
         int totalRounds = rounds.size();
         for (Map.Entry<String, Set<Integer>> entry : playerKastRounds.entrySet()) {
@@ -251,11 +240,6 @@ public class CustomMatch {
 
     public Map<String, Integer> calculateADR(String matchID) throws IOException {
         JsonObject matchData = getMatchData();
-//        if (matchID==null){
-//            matchData = getMatchData();
-//        }else {
-//            matchData = getMatchData(matchID);
-//        }
         JsonArray players = matchData.get("players").getAsJsonArray();
         Map<String, Integer> playerDamage = new HashMap<>();
         for (int i = 0; i < players.size(); i++) {
@@ -269,11 +253,7 @@ public class CustomMatch {
 
     public List<Map<String, Integer>> calculateFKFD(String matchID) throws IOException {
         JsonObject matchData = getMatchData();
-//        if (matchID==null){
-//            matchData = getMatchData();
-//        }else {
-//            matchData = getMatchData(matchID);
-//        }
+
         JsonArray kills = matchData.get("kills").getAsJsonArray();
         Map<String, Integer> playerFK = new HashMap<>();
         Map<String, Integer> playerFD = new HashMap<>();
@@ -293,7 +273,7 @@ public class CustomMatch {
             playerFD.put(victimPuuid, playerFD.getOrDefault(victimPuuid, 0)+1);
         }
         JsonArray players = matchData.get("players").getAsJsonArray();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < players.size(); i++) {
             String puuid = players.get(i).getAsJsonObject().get("puuid").getAsString();
             if(!playerFK.containsKey(puuid)){
                 playerFK.put(puuid, 0);

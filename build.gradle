@@ -29,6 +29,7 @@ dependencies {
     implementation("io.github.socketc0nnection:jva:1.2")
     implementation("org.jsoup:jsoup:1.18.3")
     implementation("ch.qos.logback:logback-classic:1.5.15")
+    implementation 'guru.nidi:graphviz-java:0.18.1'
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
