@@ -7,10 +7,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.swaruph.RookTownBot.config.DatabaseConfig;
 import com.swaruph.RookTownBot.model.LeaderboardPlayer;
 
 public class RookDB {
-
+    DatabaseConfig db = new DatabaseConfig();
     public void createRookTable() {
         String query = "CREATE TABLE IF NOT EXISTS rook (\n"
                 + "rook_id integer PRIMARY KEY,\n"
@@ -22,14 +23,14 @@ public class RookDB {
                 + "in_game_rank text, \n"
                 + "agent_pool text \n"
                 + ");";
-        Database db = new Database();
+
         db.execute(query);
     }
 
     public void insertIntoRook(String puuid, String discordId, String name) {
         String query = "INSERT INTO rook (puuid, discord_id, name) VALUES (?, ?, ?)";
         try {
-            Connection con = Database.connect();
+            Connection con = db.connect();
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, puuid);
             pstmt.setString(2, discordId);
@@ -47,7 +48,7 @@ public class RookDB {
         String discordId = null;
         String query = "SELECT discord_id FROM rook WHERE puuid = ?";
         try {
-            Connection con = Database.connect();
+            Connection con = db.connect();
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, puuid);
             ResultSet resultSet = pstmt.executeQuery();
@@ -69,7 +70,7 @@ public class RookDB {
         String name;
         String query = "SELECT name FROM rook WHERE discord_id = ?";
         try {
-            Connection con = Database.connect();
+            Connection con = db.connect();
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, discordId);
             ResultSet resultSet = pstmt.executeQuery();
@@ -86,7 +87,7 @@ public class RookDB {
     public void insertIntoLeaderboard(String puuid) {
         String query = "INSERT INTO rook (puuid) VALUES (?)";
         try {
-            Connection con = Database.connect();
+            Connection con = db.connect();
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, puuid);
             pstmt.executeUpdate();
@@ -101,7 +102,7 @@ public class RookDB {
     public void updateLeaderboardStats(LeaderboardPlayer leaderboard) {
         String sql =  "INSERT OR REPLACE INTO rook (puuid, discord_id, name, agents, totalRounds, totalMatches, rating, ACS, KDA, KAST, ADR, KPR, APR, FKPR, FDPR, HS, CL, CLWP, KMAX, kills, deaths, assists,FK, FD, wins, loses) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try {
-            Connection con = Database.connect();
+            Connection con = db.connect();
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, leaderboard.getPuuid());
             pstmt.setString(2, leaderboard.getDiscordId());
@@ -142,7 +143,7 @@ public class RookDB {
         String sql = "SELECT * FROM rook WHERE puuid = ?";
         LeaderboardPlayer leaderboardPlayer = new LeaderboardPlayer(puuid);
         try {
-            Connection con = Database.connect();
+            Connection con = db.connect();
             PreparedStatement pstmt = con.prepareStatement(sql);
             pstmt.setString(1, puuid);
             ResultSet resultSet = pstmt.executeQuery();
@@ -185,7 +186,7 @@ public class RookDB {
         String query = "SELECT * FROM rook";
         List<LeaderboardPlayer> leaderboardPlayers = new ArrayList<>();
         try {
-            Connection con = Database.connect();
+            Connection con = db.connect();
             PreparedStatement pstmt = con.prepareStatement(query);
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
@@ -228,10 +229,10 @@ public class RookDB {
     }
 
     public String getPlayerNameByPuuid(String puuid) {
-        Connection con = Database.connect();
         String name = null;
         String query = "SELECT name FROM rook WHERE puuid = ?";
         try {
+            Connection con = db.connect();
             PreparedStatement pstmt = con.prepareStatement(query);
             pstmt.setString(1, puuid);
             ResultSet resultSet = pstmt.executeQuery();

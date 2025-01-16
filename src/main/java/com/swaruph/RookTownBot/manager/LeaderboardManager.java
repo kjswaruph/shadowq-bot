@@ -8,8 +8,8 @@ import com.swaruph.RookTownBot.database.RookDB;
 import com.swaruph.RookTownBot.model.Leaderboard;
 import com.swaruph.RookTownBot.model.LeaderboardPlayer;
 
-// First, let's create a LeaderboardManager class to handle all leaderboard operations
 public class LeaderboardManager {
+
     private final RookDB rookDB;
     public LeaderboardManager(RookDB rookDB) {
         this.rookDB = rookDB;
