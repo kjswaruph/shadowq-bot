@@ -18,6 +18,8 @@ public class RookDB {
     
     DatabaseConfig db = new DatabaseConfig();
 
+    private final String BOT_DISCORD_ID = "1310486108483878983";
+
     public RookDB() {
         createRookTable();
     }
@@ -42,7 +44,7 @@ public class RookDB {
         ){
             pstmt.executeUpdate();
         }catch (SQLException e){
-            logger.error(e.getMessage());
+            logger.error("Failed to create rook table", e);
         }
 
         db.execute(query);
@@ -60,7 +62,7 @@ public class RookDB {
             pstmt.setString(3, name);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to insert into rook", e);
         }
     }
 
@@ -76,12 +78,12 @@ public class RookDB {
             ResultSet resultSet = pstmt.executeQuery();
             discordId = resultSet.getString("discord_id");
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to get discord id by puuid", e);
         }
 
         // if the discordId is null, return a bot's discord id
         if(discordId==null){
-            discordId = "1310486108483878983";
+            discordId = BOT_DISCORD_ID;
             return discordId;
         }
         return discordId;
@@ -100,10 +102,9 @@ public class RookDB {
             name = resultSet.getString("name");
             return name;
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to get name by discord id", e);
+            throw new RuntimeException("Failed to get name by discord id", e);
         }
-
-        return null;
     }
 
     public void insertIntoLeaderboard(String puuid) {
@@ -116,7 +117,7 @@ public class RookDB {
             pstmt.setString(1, puuid);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to insert into leaderboard", e);
         }
 
     }
@@ -156,7 +157,7 @@ public class RookDB {
             pstmt.setInt(26, leaderboard.getLoses());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to update leaderboard stats", e);
         }
 
     }
@@ -198,7 +199,7 @@ public class RookDB {
             leaderboardPlayer.setLoses(resultSet.getInt("loses"));
             resultSet.close();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to get leaderboard player", e);
         }
 
         return leaderboardPlayer;
@@ -244,7 +245,7 @@ public class RookDB {
             }
             resultSet.close();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to get all leaderboard stats", e);
         }
 
         return leaderboardPlayers;
@@ -263,7 +264,7 @@ public class RookDB {
             name = resultSet.getString("name");
             resultSet.close();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to get player name by puuid", e);
         }
 
         return name;
