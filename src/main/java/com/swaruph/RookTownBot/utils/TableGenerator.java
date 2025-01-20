@@ -55,7 +55,7 @@ public class TableGenerator{
             Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(outputFileName));
 
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("Failed to generate leaderboard", e);
         }
     }
 
@@ -65,7 +65,7 @@ public class TableGenerator{
             MutableGraph g = new Parser().read(dot);
             Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(outputFileName));
         }catch (Exception e){
-            logger.error(e.getMessage());
+            logger.error("Failed to generate scoreboard", e);
         }
     }
 

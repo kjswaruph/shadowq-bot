@@ -28,7 +28,7 @@ public class QueueDB {
         ) {
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            logger.error(e.getMessage());
+            logger.error("Failed to create the table", e);
         }
     }
 
@@ -46,7 +46,7 @@ public class QueueDB {
             pstmt.setString(5, queueAdminId);
             pstmt.executeUpdate();
         }catch (SQLException e){
-            logger.error(e.getMessage());
+            logger.error("Failed to insert into the table", e);
         }
 
     }
@@ -61,7 +61,7 @@ public class QueueDB {
             ResultSet rs = pstmt.executeQuery();
             lastId = rs.getInt("queue_id");
         }catch (SQLException e){
-            logger.error(e.getMessage());
+            logger.error("Failed to get the last row", e);
         }
 
         return lastId;
@@ -77,7 +77,7 @@ public class QueueDB {
             ResultSet rs = pstmt.executeQuery();
             queue_status = rs.getBoolean("queue_status");
         }catch (SQLException e){
-            logger.error(e.getMessage());
+            logger.error("Failed to get the queue status", e);
         }
 
         return queue_status;
@@ -94,7 +94,7 @@ public class QueueDB {
             pstmt.setInt(2, queue_id);
             pstmt.executeUpdate();
         }catch (SQLException e){
-            logger.error(e.getMessage());
+            logger.error("Failed to update the queue status", e);
         }
 
     }

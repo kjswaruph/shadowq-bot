@@ -24,7 +24,7 @@ public class Purge implements ICommand{
 
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) {
-        Role role = Objects.requireNonNull(event.getGuild()).getRoleById(1324703647501783162L);
+        Role role = Objects.requireNonNull(event.getGuild()).getRolesByName("Mod", false).getFirst();
         if (event.getGuild().getSelfMember().getRoles().contains(role)){
             event.reply("You don't have permission to purge messages").queue();
             return;

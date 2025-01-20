@@ -21,7 +21,7 @@ public class ConfigLoader {
             }
             properties.load(input);
         } catch (Exception e) {
-            logger.error("Failed to load configuration: {}", e.getMessage());
+            logger.error("Failed to load configuration", e);
             throw new RuntimeException("Unable to load configuration.", e);
         }
     }

@@ -67,6 +67,3 @@ public class RookTownBot extends ListenerAdapter {
 }
 
 
-// TODO:1 add matchID to queues table for avoiding duplicate matches score in leaderboard
-// TODO:2 add options to start-queue command for selecting party code and region
-
