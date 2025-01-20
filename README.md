@@ -46,7 +46,7 @@ RookTownBot is a Java-based Discord bot designed to manage queues for Valorant c
     git clone https://github.com/yourusername/RookTownBot.git
     cd RookTownBot
     ```
-
+    
 2. Create a config.properties files and add the following
 
    ```properties
@@ -55,7 +55,7 @@ RookTownBot is a Java-based Discord bot designed to manage queues for Valorant c
    HENRIK.DEV.KEY=YOUR-API-KEY
    DOCKER.HUB.USERNAME=DOCKER_USERNAME
    DOCKER.HUB.PASSWORD=DOCKER_PASSWORD
-   ```
+
 
 3. Build the project:
     ```sh
