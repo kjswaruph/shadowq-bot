@@ -36,7 +36,6 @@ public class Purge implements ICommand{
         }
         TextChannel channel = event.getChannel().asTextChannel();
         MessageHistory history = channel.getHistory();
-        assert amount != null;
         history.retrievePast(amount.getAsInt()).queue(channel::purgeMessages);
         event.reply("Purged "+amount.getAsInt()).queue();
     }

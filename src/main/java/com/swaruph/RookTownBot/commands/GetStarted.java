@@ -4,9 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
-import com.swaruph.RookTownBot.actions.GetStartedAction;
-import com.swaruph.RookTownBot.database.RookDB;
-import com.swaruph.RookTownBot.model.CustomMatch;
+import com.swaruph.RookTownBot.config.ValorantConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -21,10 +19,20 @@ import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import net.dv8tion.jda.api.interactions.modals.Modal;
 import net.dv8tion.jda.api.interactions.modals.ModalMapping;
+import net.socketconnection.jva.ValorantAPI;
 import net.socketconnection.jva.player.ValorantPlayer;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.swaruph.RookTownBot.RookTownBot.rookDB;
 
 public class GetStarted extends ListenerAdapter implements ICommand {
+
+    private static final Logger logger = LoggerFactory.getLogger(GetStarted.class);
+
+    ValorantConfig valorantConfig = new ValorantConfig();
+    ValorantAPI valorantAPI ;
 
     @NotNull
     @Override
@@ -87,29 +95,27 @@ public class GetStarted extends ListenerAdapter implements ICommand {
                 ModalMapping roleValue = event.getValue("role-field");
                 ModalMapping descriptionValue = event.getValue("description-field");
 
-                assert usernameValue != null;
                 String username = usernameValue.getAsString();
-                assert tagValue != null;
                 String tag = tagValue.getAsString();
-                assert roleValue != null;
                 String role = roleValue.getAsString();
                 String description = descriptionValue != null ? descriptionValue.getAsString() : "N/A";
 
-                GetStartedAction getStartedAction = new GetStartedAction();
-                ValorantPlayer valorantPlayer = getStartedAction.getPlayer(username, tag);
 
-                boolean success = getStartedAction.getStarted(username, tag, role, description);
+                try {
+                    valorantAPI = new ValorantAPI(valorantConfig.getToken());
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
+                }
+
+                boolean success = check(username, tag);
                 if (success) {
+                    ValorantPlayer valorantPlayer = getPlayer(username, tag);
                     Member member = event.getMember();
                     Guild guild = event.getGuild();
-                    assert guild != null;
                     Role guildRole = guild.getRoleById(1316784105152577637L);
-                    assert member != null;
-                    assert guildRole != null;
                     guild.addRoleToMember(member, guildRole).queue();
 
-                    CustomMatch customMatch = new CustomMatch(valorantPlayer.getValorantAPI(), valorantPlayer);
-                    RookDB rookDB = new RookDB();
+
                     rookDB.insertIntoRook(valorantPlayer.getPlayerId(), member.getId(), username + "#" + tag);
 
                     EmbedBuilder builder = new EmbedBuilder()
@@ -121,7 +127,6 @@ public class GetStarted extends ListenerAdapter implements ICommand {
                             .addField("Description", description, false)
                             .setImage(valorantPlayer.getPlayerCard().getSmall());
 
-                    // Use getHook() since we deferred the reply
                     event.getHook().sendMessageEmbeds(builder.build()).setEphemeral(true).queue();
                 } else {
                     event.getHook().sendMessage("Failed to link your Riot ID to your Discord account, please provide valid username and tag")
@@ -132,14 +137,33 @@ public class GetStarted extends ListenerAdapter implements ICommand {
                 event.getHook().sendMessage("An error occurred while processing your request. Please try again later.")
                      .setEphemeral(true)
                      .queue();
-                e.printStackTrace();
+                logger.error(e.getMessage());
             } catch (Exception e) {
                 event.getHook().sendMessage("An unexpected error occurred. Please try again later.")
                      .setEphemeral(true)
                      .queue();
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
+    }
+
+    public boolean check(String username, String tag) {
+        ValorantPlayer valorantPlayer;
+        boolean isSuccess;
+        try {
+            valorantAPI = new ValorantAPI(valorantConfig.getToken());
+            valorantPlayer = new ValorantPlayer(valorantAPI).fetchData(username, tag);
+            isSuccess = true;
+        }catch (IOException e){
+            isSuccess = false;
+            logger.error(e.getMessage());
+        }
+        return isSuccess;
+    }
+
+    public ValorantPlayer getPlayer(String username, String tag) throws IOException {
+        ValorantPlayer valorantPlayer = new ValorantPlayer(valorantAPI).fetchData(username, tag);
+        return valorantPlayer;
     }
 
 }

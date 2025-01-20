@@ -24,21 +24,15 @@ def jdaVersion = "5.2.1" // JDA version
 
 dependencies {
     implementation("net.dv8tion:JDA:$jdaVersion")
+    implementation("ch.qos.logback:logback-classic:1.5.15")
     implementation("org.jetbrains:annotations:26.0.1")
     implementation("org.xerial:sqlite-jdbc:3.47.1.0")
     implementation("io.github.socketc0nnection:jva:1.2")
     implementation("org.jsoup:jsoup:1.18.3")
-    implementation("ch.qos.logback:logback-classic:1.5.15")
     implementation 'guru.nidi:graphviz-java:0.18.1'
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
-
-javafx {
-    version = "23.0.1"
-    modules = [ 'javafx.controls', 'javafx.swing', 'javafx.web'  ]
-}
-
 
 compileJava {
     options.encoding = "UTF-8"

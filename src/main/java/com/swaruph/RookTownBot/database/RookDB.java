@@ -9,56 +9,77 @@ import java.util.List;
 
 import com.swaruph.RookTownBot.config.DatabaseConfig;
 import com.swaruph.RookTownBot.model.LeaderboardPlayer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RookDB {
+
+    private static final Logger logger = LoggerFactory.getLogger(RookDB.class);
+    
     DatabaseConfig db = new DatabaseConfig();
+
+    public RookDB() {
+        createRookTable();
+    }
+
     public void createRookTable() {
-        String query = "CREATE TABLE IF NOT EXISTS rook (\n"
-                + "rook_id integer PRIMARY KEY,\n"
-                + "riot_id text NOT NULL,\n"
-                + "gender text ,\n"
-                + "age integer,\n"
-                + "rook_rank text, \n"
-                + "in_game_role text, \n"
-                + "in_game_rank text, \n"
-                + "agent_pool text \n"
-                + ");";
+        String query = """
+                CREATE TABLE IF NOT EXISTS rook (
+                rook_id integer PRIMARY KEY,
+                riot_id text NOT NULL,
+                gender text ,
+                age integer,
+                rook_rank text,
+                in_game_role text,
+                in_game_rank text,
+                agent_pool text
+                );
+        """;
+
+        try(
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(query)
+        ){
+            pstmt.executeUpdate();
+        }catch (SQLException e){
+            logger.error(e.getMessage());
+        }
 
         db.execute(query);
     }
 
     public void insertIntoRook(String puuid, String discordId, String name) {
         String query = "INSERT INTO rook (puuid, discord_id, name) VALUES (?, ?, ?)";
-        try {
-            Connection con = db.connect();
-            PreparedStatement pstmt = con.prepareStatement(query);
+
+        try (
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(query)
+        ) {
             pstmt.setString(1, puuid);
             pstmt.setString(2, discordId);
             pstmt.setString(3, name);
             pstmt.executeUpdate();
-            pstmt.close();
-            con.close();
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
         }
     }
 
     public String getDiscordIdByPuuid(String puuid) {
         String discordId = null;
         String query = "SELECT discord_id FROM rook WHERE puuid = ?";
-        try {
-            Connection con = db.connect();
-            PreparedStatement pstmt = con.prepareStatement(query);
+
+        try(
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(query)
+        ) {
             pstmt.setString(1, puuid);
             ResultSet resultSet = pstmt.executeQuery();
             discordId = resultSet.getString("discord_id");
-            pstmt.close();
-            con.close();
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
         }
+
+        // if the discordId is null, return a bot's discord id
         if(discordId==null){
             discordId = "1310486108483878983";
             return discordId;
@@ -69,41 +90,44 @@ public class RookDB {
     public String getNameByDiscordId(String discordId) {
         String name;
         String query = "SELECT name FROM rook WHERE discord_id = ?";
-        try {
-            Connection con = db.connect();
-            PreparedStatement pstmt = con.prepareStatement(query);
+
+        try(
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(query)
+        ) {
             pstmt.setString(1, discordId);
             ResultSet resultSet = pstmt.executeQuery();
             name = resultSet.getString("name");
-            pstmt.close();
-            con.close();
             return name;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
+
         return null;
     }
 
     public void insertIntoLeaderboard(String puuid) {
         String query = "INSERT INTO rook (puuid) VALUES (?)";
-        try {
-            Connection con = db.connect();
-            PreparedStatement pstmt = con.prepareStatement(query);
+
+        try(
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(query)
+        ) {
             pstmt.setString(1, puuid);
             pstmt.executeUpdate();
-            pstmt.close();
-            con.close();
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
         }
+
     }
 
     public void updateLeaderboardStats(LeaderboardPlayer leaderboard) {
         String sql =  "INSERT OR REPLACE INTO rook (puuid, discord_id, name, agents, totalRounds, totalMatches, rating, ACS, KDA, KAST, ADR, KPR, APR, FKPR, FDPR, HS, CL, CLWP, KMAX, kills, deaths, assists,FK, FD, wins, loses) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            Connection con = db.connect();
-            PreparedStatement pstmt = con.prepareStatement(sql);
+
+        try(
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(sql)
+        ) {
             pstmt.setString(1, leaderboard.getPuuid());
             pstmt.setString(2, leaderboard.getDiscordId());
             pstmt.setString(3, leaderboard.getLeaderboardPlayerName());
@@ -131,20 +155,20 @@ public class RookDB {
             pstmt.setInt(25, leaderboard.getWins());
             pstmt.setInt(26, leaderboard.getLoses());
             pstmt.executeUpdate();
-            pstmt.close();
-            con.close();
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
         }
+
     }
 
     public LeaderboardPlayer getLeaderboardPlayer(String puuid) {
         String sql = "SELECT * FROM rook WHERE puuid = ?";
         LeaderboardPlayer leaderboardPlayer = new LeaderboardPlayer(puuid);
-        try {
-            Connection con = db.connect();
-            PreparedStatement pstmt = con.prepareStatement(sql);
+
+        try(
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(sql)
+        ){
             pstmt.setString(1, puuid);
             ResultSet resultSet = pstmt.executeQuery();
             leaderboardPlayer.setLeaderboardPlayerName(resultSet.getString("name"));
@@ -173,21 +197,21 @@ public class RookDB {
             leaderboardPlayer.setWins(resultSet.getInt("wins"));
             leaderboardPlayer.setLoses(resultSet.getInt("loses"));
             resultSet.close();
-            pstmt.close();
-            con.close();
-        } catch (
-                SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
         }
+
         return leaderboardPlayer;
     }
 
     public List<LeaderboardPlayer> getAllLeaderboardStats() {
         String query = "SELECT * FROM rook";
         List<LeaderboardPlayer> leaderboardPlayers = new ArrayList<>();
-        try {
-            Connection con = db.connect();
-            PreparedStatement pstmt = con.prepareStatement(query);
+
+        try(
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(query)
+        ) {
             ResultSet resultSet = pstmt.executeQuery();
             while (resultSet.next()) {
                 LeaderboardPlayer leaderboardPlayer = new LeaderboardPlayer(resultSet.getString("puuid"));
@@ -219,31 +243,29 @@ public class RookDB {
                 leaderboardPlayers.add(leaderboardPlayer);
             }
             resultSet.close();
-            pstmt.close();
-            con.close();
-        } catch (
-                SQLException e) {
-            throw new RuntimeException(e);
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
         }
+
         return leaderboardPlayers;
     }
 
     public String getPlayerNameByPuuid(String puuid) {
         String name = null;
         String query = "SELECT name FROM rook WHERE puuid = ?";
-        try {
-            Connection con = db.connect();
-            PreparedStatement pstmt = con.prepareStatement(query);
+
+        try(
+                Connection con = db.connect();
+                PreparedStatement pstmt = con.prepareStatement(query)
+        ) {
             pstmt.setString(1, puuid);
             ResultSet resultSet = pstmt.executeQuery();
             name = resultSet.getString("name");
             resultSet.close();
-            pstmt.close();
-            con.close();
-        } catch (
-                SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error(e.getMessage());
         }
+
         return name;
     }
 }

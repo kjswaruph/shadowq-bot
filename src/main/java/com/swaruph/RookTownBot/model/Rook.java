@@ -1,7 +1,8 @@
 package com.swaruph.RookTownBot.model;
 
-import com.swaruph.RookTownBot.database.RookDB;
 import net.dv8tion.jda.api.entities.User;
+
+import static com.swaruph.RookTownBot.RookTownBot.rookDB;
 
 public class Rook {
 
@@ -9,7 +10,7 @@ public class Rook {
     private String discordId;
     private User user;
     private String name;
-    private RookDB rookDB;
+
     public Rook(String puuid){
         this.puuid = puuid;
     }
@@ -23,8 +24,7 @@ public class Rook {
         this.user = user;
     }
 
-    public Rook(String puuid, String discordId, String playerName) {
-        this.rookDB = new RookDB();
+    public Rook(String puuid, String playerName) {
         this.puuid = puuid;
         this.discordId = rookDB.getDiscordIdByPuuid(puuid);
         this.name = playerName;

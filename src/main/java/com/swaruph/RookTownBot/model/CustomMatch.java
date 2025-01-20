@@ -11,10 +11,11 @@ import java.util.Set;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.swaruph.RookTownBot.database.RookDB;
 import net.socketconnection.jva.ValorantAPI;
 import net.socketconnection.jva.enums.Region;
 import net.socketconnection.jva.player.ValorantPlayer;
+
+import static com.swaruph.RookTownBot.RookTownBot.rookDB;
 
 public class CustomMatch {
 
@@ -39,7 +40,7 @@ public class CustomMatch {
         }
         JsonObject matchData = valorantAPI.sendRestRequest("/v4/match/" + admin.getRegion().getQuery() + "/" + matchID).getAsJsonObject().get("data").getAsJsonObject();
         matchDataCache.put(matchID, matchData);
-        this.totalRounds = getTotalRounds(matchID);
+        this.totalRounds = getTotalRounds();
         return matchData;
     }
 
@@ -54,25 +55,25 @@ public class CustomMatch {
         }
     }
 
-    public String getMatchMap(String matchID) throws IOException {
+    public String getMatchMap() throws IOException {
         JsonObject matchData = getMatchData();
         return matchData.get("metadata").getAsJsonObject().get("map").getAsJsonObject().get("name").getAsString();
     }
 
-    public String getMatchMode(String matchID) throws IOException {
+    public String getMatchMode() throws IOException {
         JsonObject matchData = getMatchData();
         return matchData.get("metadata").getAsJsonObject().get("queue").getAsJsonObject().get("mode_type").getAsString();
     }
 
-    public String getMatchRegion(String matchID) throws IOException {
+    public String getMatchRegion() throws IOException {
         JsonObject matchData = getMatchData();
         String regionData = matchData.get("metadata").getAsJsonObject().get("region").getAsString();
         String cluster = matchData.get("metadata").getAsJsonObject().get("cluster").getAsString();
-        Region region = Region.getFromQuery(matchData.get("metadata").getAsJsonObject().get("region").getAsString());
+        Region region = Region.getFromQuery(regionData);
         return cluster+", "+region.getName();
     }
 
-    public Map<String, List<String>> getPlayersData(String matchID) throws IOException {
+    public Map<String, List<String>> getPlayersData() throws IOException {
         JsonObject matchData = getMatchData();
         JsonArray matchPlayers = matchData.get("players").getAsJsonArray();
         Map<String, List<String>> playerData = new HashMap<>();
@@ -91,7 +92,7 @@ public class CustomMatch {
         return playerData;
     }
 
-    public String winningTeam(String matchID) throws IOException {
+    public String winningTeam() throws IOException {
         JsonObject matchData = getMatchData();
         JsonArray teams = matchData.get("teams").getAsJsonArray();
         JsonObject team1 = teams.get(0).getAsJsonObject();
@@ -105,13 +106,8 @@ public class CustomMatch {
         }
     }
 
-    public String rounds(String matchID) throws IOException {
+    public String rounds() throws IOException {
         JsonObject matchData = getMatchData();
-//        if (matchID==null){
-//            matchData = getMatchData();
-//        }else {
-//            matchData = getMatchData(matchID);
-//        }
         JsonArray teams = matchData.get("teams").getAsJsonArray();
         JsonObject team1 = teams.get(0).getAsJsonObject();
         JsonObject team2 = teams.get(1).getAsJsonObject();
@@ -125,7 +121,6 @@ public class CustomMatch {
     }
 
     public String getPlayerNameByPuuid(String puuid) throws IOException {
-        RookDB rookDB = new RookDB();
         if(rookDB.getPlayerNameByPuuid(puuid) != null) {
             return rookDB.getPlayerNameByPuuid(puuid);
         }
@@ -135,13 +130,8 @@ public class CustomMatch {
         return username + "#" + tag;
     }
 
-    public int getTotalRounds(String matchID) throws IOException {
+    public int getTotalRounds() throws IOException {
         JsonObject matchData = getMatchData();
-//        if (matchID==null){
-//            matchData = getMatchData();
-//        }else {
-//            matchData = getMatchData(matchID);
-//        }
         JsonArray teams = matchData.get("teams").getAsJsonArray();
         JsonObject team1 = teams.get(0).getAsJsonObject();
         int won = team1.get("rounds").getAsJsonObject().get("won").getAsInt();
@@ -149,13 +139,8 @@ public class CustomMatch {
         return won+lost;
     }
 
-    public Map<String, Integer> calculateKAST(String matchID) throws IOException {
+    public Map<String, Integer> calculateKAST() throws IOException {
         JsonObject matchData = getMatchData();
-//        if(matchID==null) {
-//            matchData = getMatchData();
-//        }else {
-//            matchData = getMatchData(matchID);
-//        }
         JsonArray kills = matchData.get("kills").getAsJsonArray();
         JsonArray rounds = matchData.get("rounds").getAsJsonArray();
         Map<String, Set<Integer>> playerKastRounds = new HashMap<>();
@@ -238,7 +223,7 @@ public class CustomMatch {
         return playerKast;
     }
 
-    public Map<String, Integer> calculateADR(String matchID) throws IOException {
+    public Map<String, Integer> calculateADR() throws IOException {
         JsonObject matchData = getMatchData();
         JsonArray players = matchData.get("players").getAsJsonArray();
         Map<String, Integer> playerDamage = new HashMap<>();
@@ -251,9 +236,8 @@ public class CustomMatch {
         return playerDamage;
     }
 
-    public List<Map<String, Integer>> calculateFKFD(String matchID) throws IOException {
+    public List<Map<String, Integer>> calculateFKFD() throws IOException {
         JsonObject matchData = getMatchData();
-
         JsonArray kills = matchData.get("kills").getAsJsonArray();
         Map<String, Integer> playerFK = new HashMap<>();
         Map<String, Integer> playerFD = new HashMap<>();
@@ -289,13 +273,8 @@ public class CustomMatch {
         return list;
     }
 
-    public Map<String, Integer> calculateHSRate(String matchID) throws IOException {
+    public Map<String, Integer> calculateHSRate() throws IOException {
         JsonObject matchData = getMatchData();
-//        if (matchID==null){
-//            matchData = getMatchData();
-//        }else {
-//            matchData = getMatchData(matchID);
-//        }
         JsonArray players = matchData.get("players").getAsJsonArray();
         Map<String, Integer> playerHSRate = new HashMap<>();
         for (int i = 0; i < players.size(); i++) {
@@ -310,49 +289,8 @@ public class CustomMatch {
         return playerHSRate;
     }
 
-    public double getKPR(String puuid, String matchID) throws IOException {
+    public Map<String, Integer> getRoundsPlayed() throws IOException {
         JsonObject matchData = getMatchData();
-        JsonArray players = matchData.get("players").getAsJsonArray();
-        for (int i = 0; i < players.size(); i++) {
-            JsonObject player = players.get(i).getAsJsonObject();
-            if (player.get("puuid").getAsString().equals(puuid)) {
-                JsonObject stats = player.getAsJsonObject("stats");
-                int kills = stats.get("kills").getAsInt();
-                return kills/totalRounds;
-            }
-        }
-        return 0;
-    }
-
-    public double getAPR(String puuid, String matchID){
-        JsonObject matchData = matchDataCache.get(matchID);
-        JsonArray players = matchData.get("players").getAsJsonArray();
-        for (int i = 0; i < players.size(); i++) {
-            JsonObject player = players.get(i).getAsJsonObject();
-            if (player.get("puuid").getAsString().equals(puuid)) {
-                JsonObject stats = player.getAsJsonObject("stats");
-                int assists = stats.get("assists").getAsInt();
-                return assists/totalRounds;
-            }
-        }
-        return 0;
-    }
-
-    public double getFKPR(String puuid, int FK) throws IOException {
-        return (double) FK/totalRounds;
-    }
-
-    public double getFDPR(String puuid, int FD) throws IOException {
-        return (double) FD /totalRounds;
-    }
-
-    public Map<String, Integer> getRoundsPlayed(String matchId) throws IOException {
-        JsonObject matchData = getMatchData();
-//        if (matchID == null){
-//            matchData = getMatchData();
-//        }else {
-//            matchData = getMatchData(matchId);
-//        }
         JsonArray players = matchData.get("players").getAsJsonArray();
         Map<String, Integer> playersRounds = new HashMap<>();
         for (int i = 0; i < players.size(); i++) {

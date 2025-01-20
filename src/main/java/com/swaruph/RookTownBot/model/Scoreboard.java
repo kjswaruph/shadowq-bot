@@ -1,10 +1,7 @@
 package com.swaruph.RookTownBot.model;
 
-
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -13,19 +10,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import com.swaruph.RookTownBot.RookTownBot;
-import com.swaruph.RookTownBot.actions.TableGenerator;
-import com.swaruph.RookTownBot.database.RookDB;
+import com.swaruph.RookTownBot.config.ConfigLoader;
+import com.swaruph.RookTownBot.utils.TableGenerator;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 
+import static com.swaruph.RookTownBot.RookTownBot.rookDB;
 
 public class Scoreboard{
     private String matchId;
-    private int queueId;
+    private final int queueId;
     private final CustomMatch customMatch;
     private final List<LeaderboardPlayer> leaderboardPlayers;
-    private List<Rook> winningRooks;
-    private List<Rook> losingRooks;
+    private final List<Rook> winningRooks;
+    private final List<Rook> losingRooks;
     private String mvp;
     private final JDA jda = RookTownBot.getInstance().getJDA();
 
@@ -35,10 +33,6 @@ public class Scoreboard{
         this.winningRooks = new ArrayList<>();
         this.losingRooks = new ArrayList<>();
         this.leaderboardPlayers = new ArrayList<>();
-    }
-
-    public String getMatchId() {
-        return matchId;
     }
 
     public String getWinningRooksAsString(){
@@ -78,14 +72,6 @@ public class Scoreboard{
         return rooks.toString();
     }
 
-    public String getMatchMvp(){
-        return mvp;
-    }
-
-    public int getTotalRounds() throws IOException {
-        return customMatch.getTotalRounds(matchId);
-    }
-
     public String getLosingRooksAsString(){
         StringBuilder rooks = new StringBuilder();
 
@@ -112,20 +98,18 @@ public class Scoreboard{
     }
 
     public void getTableData() throws IOException {
-        Map<String, Integer> KAST = customMatch.calculateKAST(matchId);
-        Map<String, Integer> ADR = customMatch.calculateADR(matchId);
-        Map<String, Integer> HS = customMatch.calculateHSRate(matchId);
-        Map<String, List<String>> players = customMatch.getPlayersData(matchId);
-        List<Map<String, Integer>> fkfd = customMatch.calculateFKFD(matchId);
+        Map<String, Integer> KAST = customMatch.calculateKAST();
+        Map<String, Integer> ADR = customMatch.calculateADR();
+        Map<String, Integer> HS = customMatch.calculateHSRate();
+        Map<String, List<String>> players = customMatch.getPlayersData();
+        List<Map<String, Integer>> fkfd = customMatch.calculateFKFD();
         Map<String, Integer> FK = fkfd.get(0);
         Map<String, Integer> FD = fkfd.get(1);
         List<ScoreboardPlayer> winTeamPlayers = new ArrayList<>();
         List<ScoreboardPlayer> loseTeamPlayers = new ArrayList<>();
-        Map<String, Integer> roundsPlayers = customMatch.
-                getRoundsPlayed(matchId);
+        Map<String, Integer> roundsPlayers = customMatch.getRoundsPlayed();
         boolean isRedWin = false;
-        RookDB rookDB = new RookDB();
-        if(customMatch.winningTeam(matchId).equals("Red")){
+        if(customMatch.winningTeam().equals("Red")){
             isRedWin = true;
         }
         for (Map.Entry<String, List<String>> entry : players.entrySet()){
@@ -157,42 +141,35 @@ public class Scoreboard{
             if(isRedWin){
                 if(Objects.equals(team, "Red")){
                     winTeamPlayers.add(scoreboardPlayer);
-                    winningRooks.add(new Rook(puuid, rookDB.getDiscordIdByPuuid(puuid), playerName));
+                    winningRooks.add(new Rook(puuid, playerName));
                     leaderboardPlayers.add(new LeaderboardPlayer(puuid, rookDB.getDiscordIdByPuuid(puuid), playerName, agent, rounds, 1, rating, acs, kda, kast, adr, kpr, apr, fkpr, fdpr, hs, 0, 0, kills, kills, deaths, assists, fk, fd, 1, 0));
                 }else{
                     loseTeamPlayers.add(scoreboardPlayer);
-                    losingRooks.add(new Rook(puuid, rookDB.getDiscordIdByPuuid(puuid), playerName));
+                    losingRooks.add(new Rook(puuid, playerName));
                     leaderboardPlayers.add(new LeaderboardPlayer(puuid, rookDB.getDiscordIdByPuuid(puuid), playerName, agent, rounds, 1, rating,  acs, kda, kast, adr, kpr, apr, fkpr, fdpr, hs, 0, 0, kills, kills, deaths, assists, fk, fd, 0, 1));
                 }
             }
             else{
                 if(Objects.equals(team, "Blue")){
                     winTeamPlayers.add(scoreboardPlayer);
-                    winningRooks.add(new Rook(puuid, rookDB.getDiscordIdByPuuid(puuid), playerName));
+                    winningRooks.add(new Rook(puuid, playerName));
                     leaderboardPlayers.add(new LeaderboardPlayer(puuid, rookDB.getDiscordIdByPuuid(puuid), playerName, agent, rounds, 1,rating, acs, kda, kast, adr, kpr, apr, fkpr, fdpr, hs, 0, 0, kills, kills, deaths, assists, fk, fd, 1, 0));
 
                 }else{
                     loseTeamPlayers.add(scoreboardPlayer);
-                    losingRooks.add(new Rook(puuid, rookDB.getDiscordIdByPuuid(puuid), playerName));
+                    losingRooks.add(new Rook(puuid, playerName));
                     leaderboardPlayers.add(new LeaderboardPlayer(puuid, rookDB.getDiscordIdByPuuid(puuid), playerName, agent, rounds, 1, rating, acs, kda, kast, adr, kpr, apr, fkpr, fdpr, hs, 0, 0, kills, kills, deaths, assists, fk, fd, 0, 1));
 
                 }
             }
         }
-        Collections.sort(winTeamPlayers, Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
-        Collections.sort(loseTeamPlayers, Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
+        winTeamPlayers.sort(Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
+        loseTeamPlayers.sort(Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
 
-        TableGenerator tableGenerator = new TableGenerator(winTeamPlayers, loseTeamPlayers, "/home/ubuntu/RookTownBot/images/scoreboard_"+queueId+".png");
+        TableGenerator tableGenerator = new TableGenerator(winTeamPlayers, loseTeamPlayers, ConfigLoader.getInstance().getProperty("SCOREBOARD.IMAGES.PATH")+queueId+".png");
+        tableGenerator.generateTable();
     }
 
-
-    public List<Rook> getWinningRooks() {
-        return winningRooks;
-    }
-
-    public List<Rook> getLosingRooks() {
-        return losingRooks;
-    }
 
     public List<LeaderboardPlayer> getLeaderboardPlayers(){
         return this.leaderboardPlayers;
