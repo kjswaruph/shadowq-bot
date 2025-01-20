@@ -1,11 +1,7 @@
 package com.swaruph.RookTownBot.model;
 
 public class ScoreboardPlayer {
-    /*
-        Player | Agent| Team | ACS | K | D | A | +/-(Kills/ Deaths) | KAST | ADR | HS% | FK | FD | +/-(First Kills/ First Deaths)
-     Rounds  |  Rating  ||  KPR  |  APR  |  FKPR  |  FDPR  |   CL%  |  CL  |  KMAX   |  Wins | Loss
 
-     */
     private String scoreboardPlayerName;
     private String agent;
     private String team;

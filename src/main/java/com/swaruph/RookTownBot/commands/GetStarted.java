@@ -44,7 +44,7 @@ public class GetStarted extends ListenerAdapter implements ICommand {
     public void execute(@NotNull SlashCommandInteractionEvent event) {
         Member member = event.getMember();
         Guild guild = event.getGuild();
-        Role role = guild.getRoleById(1316784105152577637L);
+        Role role = guild.getRolesByName("valo-verified", false).getFirst();
         List<Member> memberswithRoles = guild.getMembersWithRoles(role);
         if(memberswithRoles.contains(member)){
             event.reply("You have already linked your riot id").queue();
@@ -86,7 +86,7 @@ public class GetStarted extends ListenerAdapter implements ICommand {
     @Override
     public void onModalInteraction(ModalInteractionEvent event) {
         if (event.getModalId().equals("get-started-modal")) {
-            // Acknowledge the interaction immediately
+
             event.deferReply(true).queue();
 
             try {
@@ -104,7 +104,7 @@ public class GetStarted extends ListenerAdapter implements ICommand {
                 try {
                     valorantAPI = new ValorantAPI(valorantConfig.getToken());
                 } catch (IOException e) {
-                    logger.error(e.getMessage());
+                    logger.error("Failed to fetch data", e);
                 }
 
                 boolean success = check(username, tag);
@@ -112,9 +112,8 @@ public class GetStarted extends ListenerAdapter implements ICommand {
                     ValorantPlayer valorantPlayer = getPlayer(username, tag);
                     Member member = event.getMember();
                     Guild guild = event.getGuild();
-                    Role guildRole = guild.getRoleById(1316784105152577637L);
+                    Role guildRole = guild.getRolesByName("valo-verified", false).getFirst();
                     guild.addRoleToMember(member, guildRole).queue();
-
 
                     rookDB.insertIntoRook(valorantPlayer.getPlayerId(), member.getId(), username + "#" + tag);
 
@@ -137,12 +136,7 @@ public class GetStarted extends ListenerAdapter implements ICommand {
                 event.getHook().sendMessage("An error occurred while processing your request. Please try again later.")
                      .setEphemeral(true)
                      .queue();
-                logger.error(e.getMessage());
-            } catch (Exception e) {
-                event.getHook().sendMessage("An unexpected error occurred. Please try again later.")
-                     .setEphemeral(true)
-                     .queue();
-                logger.error(e.getMessage());
+                logger.error("Failed to fetch data", e);
             }
         }
     }
@@ -156,14 +150,13 @@ public class GetStarted extends ListenerAdapter implements ICommand {
             isSuccess = true;
         }catch (IOException e){
             isSuccess = false;
-            logger.error(e.getMessage());
+            logger.error("Failed to fetch data", e);
         }
         return isSuccess;
     }
 
     public ValorantPlayer getPlayer(String username, String tag) throws IOException {
-        ValorantPlayer valorantPlayer = new ValorantPlayer(valorantAPI).fetchData(username, tag);
-        return valorantPlayer;
+        return new ValorantPlayer(valorantAPI).fetchData(username, tag);
     }
 
 }
