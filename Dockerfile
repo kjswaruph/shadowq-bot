@@ -6,7 +6,7 @@ WORKDIR /bot
 
 RUN gradle shadowJar --no-daemon
 
-FROM eclipse-temurin:21-jdk AS run
+FROM eclipse-temurin:21-jre AS run
 
 WORKDIR /bot
 
