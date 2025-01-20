@@ -7,13 +7,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import com.swaruph.RookTownBot.config.DatabaseConfig;
 import com.swaruph.RookTownBot.model.LeaderboardPlayer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RookDB {
 
+    private static final Logger logger = LoggerFactory.getLogger(RookDB.class);
+    
     DatabaseConfig db = new DatabaseConfig();
 
     public RookDB() {
@@ -22,16 +24,16 @@ public class RookDB {
 
     public void createRookTable() {
         String query = """
-                CREATE TABLE IF NOT EXISTS rook (\n"
-                "rook_id integer PRIMARY KEY,\n"
-                "riot_id text NOT NULL,\n"
-                "gender text ,\n"
-                "age integer,\n"
-                "rook_rank text, \n"
-                "in_game_role text, \n"
-                "in_game_rank text, \n"
-                "agent_pool text \n"
-                ");
+                CREATE TABLE IF NOT EXISTS rook (
+                rook_id integer PRIMARY KEY,
+                riot_id text NOT NULL,
+                gender text ,
+                age integer,
+                rook_rank text,
+                in_game_role text,
+                in_game_rank text,
+                agent_pool text
+                );
         """;
 
         try(
@@ -40,7 +42,7 @@ public class RookDB {
         ){
             pstmt.executeUpdate();
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         db.execute(query);
@@ -58,7 +60,7 @@ public class RookDB {
             pstmt.setString(3, name);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -74,7 +76,7 @@ public class RookDB {
             ResultSet resultSet = pstmt.executeQuery();
             discordId = resultSet.getString("discord_id");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         // if the discordId is null, return a bot's discord id
@@ -98,7 +100,7 @@ public class RookDB {
             name = resultSet.getString("name");
             return name;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return null;
@@ -114,7 +116,7 @@ public class RookDB {
             pstmt.setString(1, puuid);
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
     }
@@ -154,7 +156,7 @@ public class RookDB {
             pstmt.setInt(26, leaderboard.getLoses());
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
     }
@@ -165,7 +167,7 @@ public class RookDB {
 
         try(
                 Connection con = db.connect();
-                PreparedStatement pstmt = con.prepareStatement(sql);
+                PreparedStatement pstmt = con.prepareStatement(sql)
         ){
             pstmt.setString(1, puuid);
             ResultSet resultSet = pstmt.executeQuery();
@@ -196,7 +198,7 @@ public class RookDB {
             leaderboardPlayer.setLoses(resultSet.getInt("loses"));
             resultSet.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return leaderboardPlayer;
@@ -242,7 +244,7 @@ public class RookDB {
             }
             resultSet.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return leaderboardPlayers;
@@ -261,7 +263,7 @@ public class RookDB {
             name = resultSet.getString("name");
             resultSet.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return name;

@@ -10,6 +10,7 @@ public class Rook {
     private String discordId;
     private User user;
     private String name;
+
     public Rook(String puuid){
         this.puuid = puuid;
     }
@@ -23,7 +24,7 @@ public class Rook {
         this.user = user;
     }
 
-    public Rook(String puuid, String discordId, String playerName) {
+    public Rook(String puuid, String playerName) {
         this.puuid = puuid;
         this.discordId = rookDB.getDiscordIdByPuuid(puuid);
         this.name = playerName;

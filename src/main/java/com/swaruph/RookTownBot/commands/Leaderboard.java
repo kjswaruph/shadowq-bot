@@ -1,11 +1,10 @@
 package com.swaruph.RookTownBot.commands;
 
 import java.awt.Color;
-import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.swaruph.RookTownBot.config.ConfigLoader;
 import com.swaruph.RookTownBot.utils.TableGenerator;
 import com.swaruph.RookTownBot.manager.LeaderboardManager;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -18,8 +17,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.NotNull;
-
-import static com.swaruph.RookTownBot.config.ConfigLoader.getProperty;
 
 public class Leaderboard implements ICommand {
 
@@ -58,7 +55,7 @@ public class Leaderboard implements ICommand {
         sb.append("<a:posThird:1324247878188662795> ").append("<@").append(players.get(2).getDiscordId()).append(">");
 
 
-        TableGenerator tableGenerator = new TableGenerator(players, getProperty("LEADERBOARD.IMAGES.PATH"));
+        TableGenerator tableGenerator = new TableGenerator(players, ConfigLoader.getInstance().getProperty("LEADERBOARD.IMAGES.PATH"));
         Path path = tableGenerator.generateTable();
         FileUpload image = FileUpload.fromData(path);
 

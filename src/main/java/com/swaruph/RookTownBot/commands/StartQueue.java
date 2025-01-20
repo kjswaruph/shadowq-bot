@@ -1,7 +1,6 @@
 package com.swaruph.RookTownBot.commands;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -11,6 +10,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.swaruph.RookTownBot.config.ConfigLoader;
 import com.swaruph.RookTownBot.config.ValorantConfig;
 import com.swaruph.RookTownBot.manager.LeaderboardManager;
 import com.swaruph.RookTownBot.manager.QueueManager;
@@ -18,7 +18,6 @@ import com.swaruph.RookTownBot.model.CustomMatch;
 import com.swaruph.RookTownBot.model.Queue;
 import com.swaruph.RookTownBot.model.Rook;
 import com.swaruph.RookTownBot.model.Scoreboard;
-import com.swaruph.RookTownBot.utils.TableGenerator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -36,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.swaruph.RookTownBot.RookTownBot.queueDB;
 import static com.swaruph.RookTownBot.RookTownBot.rookDB;
-import static com.swaruph.RookTownBot.config.ConfigLoader.getProperty;
 
 public class StartQueue extends ListenerAdapter implements ICommand {
 
@@ -144,7 +142,7 @@ public class StartQueue extends ListenerAdapter implements ICommand {
                         ValorantPlayer valorantPlayer = new ValorantPlayer(valorantAPI).fetchData(username, tag);
                         CustomMatch customMatch = new CustomMatch(valorantAPI, valorantPlayer);
                         String matchId = customMatch.getMatchID();
-                        String mode = customMatch.getMatchMode(matchId);
+                        String mode = customMatch.getMatchMode();
                         if(!mode.equals("Standard")){
                             hook.sendMessage("Your last queue is "+mode+", play Standard mode").setEphemeral(true).queue();
                             return;
@@ -156,8 +154,8 @@ public class StartQueue extends ListenerAdapter implements ICommand {
                         QueueManager.getInstance().removeQueue(queue.getQueueId());
 
                         hook.editOriginalEmbeds(new EmbedBuilder()
-                                    .setTitle("Queue " + queue.getQueueId() + "\n" + customMatch.rounds(matchId))
-                                    .setDescription("Map: " + customMatch.getMatchMap(matchId) + "\n" + "Server: " + customMatch.getMatchRegion(matchId))
+                                    .setTitle("Queue " + queue.getQueueId() + "\n" + customMatch.rounds())
+                                    .setDescription("Map: " + customMatch.getMatchMap() + "\n" + "Server: " + customMatch.getMatchRegion())
                                     .addField("Team A", scoreboard.getWinningRooksAsString(), true)
                                     .addField("Team B", scoreboard.getLosingRooksAsString(), true)
                                     .setColor(Color.RED)
@@ -167,11 +165,11 @@ public class StartQueue extends ListenerAdapter implements ICommand {
                         hook.sendMessage("Queue ended").setEphemeral(true).queue();
                         TextChannel resultChannel = Objects.requireNonNull(event.getGuild()).getTextChannelById(1318190080049025064L);
 
-                        Path path = Path.of(getProperty("SCOREBOARD.IMAGES.PATH") + queueId + ".png");
+                        Path path = Path.of(ConfigLoader.getInstance().getProperty("SCOREBOARD.IMAGES.PATH") + queueId + ".png");
                         FileUpload file = FileUpload.fromData(path);
                         MessageEmbed embed = new EmbedBuilder()
                                 .setTitle("Queue " + queue.getQueueId())
-                                .setDescription(customMatch.rounds(matchId) + "\n" + "Map: " + customMatch.getMatchMap(matchId) + "\n" + "Server: " + customMatch.getMatchRegion(matchId))
+                                .setDescription(customMatch.rounds() + "\n" + "Map: " + customMatch.getMatchMap() + "\n" + "Server: " + customMatch.getMatchRegion())
                                 .setColor(Color.WHITE)
                                 .setImage("attachment://scoreboard_" + queueId + ".png")
                                 .build();

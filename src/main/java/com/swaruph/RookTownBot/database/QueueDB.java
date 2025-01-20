@@ -6,8 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.swaruph.RookTownBot.config.DatabaseConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QueueDB {
+
+    private static final Logger logger = LoggerFactory.getLogger(QueueDB.class);
 
     DatabaseConfig db = new DatabaseConfig();
 
@@ -24,7 +28,7 @@ public class QueueDB {
         ) {
             pstmt.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -42,7 +46,7 @@ public class QueueDB {
             pstmt.setString(5, queueAdminId);
             pstmt.executeUpdate();
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
     }
@@ -57,7 +61,7 @@ public class QueueDB {
             ResultSet rs = pstmt.executeQuery();
             lastId = rs.getInt("queue_id");
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return lastId;
@@ -74,7 +78,7 @@ public class QueueDB {
             ResultSet rs = pstmt.executeQuery();
             queue_status = rs.getBoolean("queue_status");
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
         return queue_status;
@@ -91,7 +95,7 @@ public class QueueDB {
             pstmt.setInt(2, queue_id);
             pstmt.executeUpdate();
         }catch (SQLException e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
 
     }
