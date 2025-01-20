@@ -9,6 +9,13 @@ RookTownBot is a Java-based Discord bot designed to manage queues for Valorant c
 - Update leaderboards with match statistics
 - Integration with Henrik-Dev Unofficial Valorant API for player data and match details
 
+## ⚙️Commands
+
+- /get-started : Link discord account and valorant account
+- /start-queue : Used to start a queue for a custom match
+- /leaderboard : Used to display the current leaderboard
+- /purge : Delete messages
+
 ## 📸 Screenshots
 ![Screenshot1](screenshots/rook1.png)
 ![Screenshot5](screenshots/rook5.png)
@@ -21,7 +28,7 @@ RookTownBot is a Java-based Discord bot designed to manage queues for Valorant c
 
 - Java
 - Gradle
-- SQLite (for database management)
+- SQLite 
 
 ## 🚀 Getting Started
 
@@ -29,7 +36,7 @@ RookTownBot is a Java-based Discord bot designed to manage queues for Valorant c
 
 - Java 11 or higher
 - Gradle
-- A Discord bot token
+- Discord bot token
 - Henrik-Dev Valorant API token
 
 ### 🛠️ Installation
@@ -40,19 +47,22 @@ RookTownBot is a Java-based Discord bot designed to manage queues for Valorant c
     cd RookTownBot
     ```
 
-2. Configure the database:
-    - Ensure SQLite is installed and accessible.
-    - Update the `DatabaseConfig` class with your database connection details.
+2. Create a config.properties files and add the following
 
-3. Configure the bot:
-    - Update the `ValorantConfig` class with your Henrik Dev Valorant API token.
+   ```properties
+   BOT.TOKEN=YOUR_BOT_TOKEN
+   DB.URL=YOUR_DATABASE_URL
+   HENRIK.DEV.KEY=YOUR-API-KEY
+   DOCKER.HUB.USERNAME=DOCKER_USERNAME
+   DOCKER.HUB.PASSWORD=DOCKER_PASSWORD
+   ```
 
-4. Build the project:
+3. Build the project:
     ```sh
     gradle build
     ```
 
-5. Run the bot:
+4. Run the bot:
     ```sh
     gradle run
     ```
