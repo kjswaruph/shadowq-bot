@@ -69,7 +69,6 @@ public class QueueDB {
 
     public boolean getQueueStatus(int queue_id){
         boolean queue_status = false;
-
         try(
                 Connection con = db.connect();
                 PreparedStatement pstmt = con.prepareStatement("SELECT (queue_status) FROM queues WHERE queue_id = ?")

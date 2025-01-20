@@ -69,7 +69,7 @@ public class CustomMatch {
         JsonObject matchData = getMatchData();
         String regionData = matchData.get("metadata").getAsJsonObject().get("region").getAsString();
         String cluster = matchData.get("metadata").getAsJsonObject().get("cluster").getAsString();
-        Region region = Region.getFromQuery(matchData.get("metadata").getAsJsonObject().get("region").getAsString());
+        Region region = Region.getFromQuery(regionData);
         return cluster+", "+region.getName();
     }
 

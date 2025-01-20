@@ -13,8 +13,12 @@ import guru.nidi.graphviz.engine.Format;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
 import guru.nidi.graphviz.parse.Parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TableGenerator{
+
+    private static final Logger logger = LoggerFactory.getLogger(TableGenerator.class);
 
     private final String tableType;
     private List<ScoreboardPlayer> teamA;
@@ -51,7 +55,7 @@ public class TableGenerator{
             Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(outputFileName));
 
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -61,7 +65,7 @@ public class TableGenerator{
             MutableGraph g = new Parser().read(dot);
             Graphviz.fromGraph(g).render(Format.PNG).toFile(new File(outputFileName));
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
@@ -187,8 +191,7 @@ public class TableGenerator{
     private String getOutputFileName(){
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-        String formattedDateTime = "_"+now.format(formatter)+".png";
-        return formattedDateTime;
+        return "_"+now.format(formatter)+".png";
     }
 }
 

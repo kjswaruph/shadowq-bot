@@ -22,10 +22,14 @@ import net.dv8tion.jda.api.interactions.modals.ModalMapping;
 import net.socketconnection.jva.ValorantAPI;
 import net.socketconnection.jva.player.ValorantPlayer;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.swaruph.RookTownBot.RookTownBot.rookDB;
 
 public class GetStarted extends ListenerAdapter implements ICommand {
+
+    private static final Logger logger = LoggerFactory.getLogger(GetStarted.class);
 
     ValorantConfig valorantConfig = new ValorantConfig();
     ValorantAPI valorantAPI ;
@@ -100,7 +104,7 @@ public class GetStarted extends ListenerAdapter implements ICommand {
                 try {
                     valorantAPI = new ValorantAPI(valorantConfig.getToken());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage());
                 }
 
                 boolean success = check(username, tag);
@@ -133,12 +137,12 @@ public class GetStarted extends ListenerAdapter implements ICommand {
                 event.getHook().sendMessage("An error occurred while processing your request. Please try again later.")
                      .setEphemeral(true)
                      .queue();
-                e.printStackTrace();
+                logger.error(e.getMessage());
             } catch (Exception e) {
                 event.getHook().sendMessage("An unexpected error occurred. Please try again later.")
                      .setEphemeral(true)
                      .queue();
-                e.printStackTrace();
+                logger.error(e.getMessage());
             }
         }
     }
@@ -152,7 +156,7 @@ public class GetStarted extends ListenerAdapter implements ICommand {
             isSuccess = true;
         }catch (IOException e){
             isSuccess = false;
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
         return isSuccess;
     }
