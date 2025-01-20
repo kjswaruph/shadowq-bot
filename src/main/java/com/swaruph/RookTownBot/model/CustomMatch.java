@@ -11,10 +11,11 @@ import java.util.Set;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.swaruph.RookTownBot.database.RookDB;
 import net.socketconnection.jva.ValorantAPI;
 import net.socketconnection.jva.enums.Region;
 import net.socketconnection.jva.player.ValorantPlayer;
+
+import static com.swaruph.RookTownBot.RookTownBot.rookDB;
 
 public class CustomMatch {
 
@@ -125,7 +126,6 @@ public class CustomMatch {
     }
 
     public String getPlayerNameByPuuid(String puuid) throws IOException {
-        RookDB rookDB = new RookDB();
         if(rookDB.getPlayerNameByPuuid(puuid) != null) {
             return rookDB.getPlayerNameByPuuid(puuid);
         }

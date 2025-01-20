@@ -2,10 +2,11 @@ package com.swaruph.RookTownBot.commands;
 
 import java.awt.Color;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
-import com.swaruph.RookTownBot.actions.TableGenerator;
-import com.swaruph.RookTownBot.database.RookDB;
+import com.swaruph.RookTownBot.utils.TableGenerator;
 import com.swaruph.RookTownBot.manager.LeaderboardManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -17,6 +18,8 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.jetbrains.annotations.NotNull;
+
+import static com.swaruph.RookTownBot.config.ConfigLoader.getProperty;
 
 public class Leaderboard implements ICommand {
 
@@ -31,10 +34,10 @@ public class Leaderboard implements ICommand {
     @Override
     public void execute(@NotNull SlashCommandInteractionEvent event) {
 
+
         event.deferReply().queue();
 
-        RookDB rookDB = new RookDB();
-        LeaderboardManager leaderboardManager = new LeaderboardManager(rookDB);
+        LeaderboardManager leaderboardManager = new LeaderboardManager();
 
         OptionMapping sortBy = event.getOption("sort_by");
         OptionMapping size = event.getOption("size");
@@ -42,26 +45,28 @@ public class Leaderboard implements ICommand {
 
         List<com.swaruph.RookTownBot.model.Leaderboard> players;
 
-       if(sortBy!=null && size!=null) {
+        if(sortBy!=null && size!=null) {
            players = leaderboardManager.getLeaderboard(sortBy.getAsString(), size.getAsInt());
-       }else{
+        }else{
            players = leaderboardManager.getLeaderboard("rating", 10);
-       }
+        }
+
 
         StringBuilder sb = new StringBuilder();
         sb.append("<a:posFirst:1324247637792391250> ").append("<@").append(players.get(0).getDiscordId()).append("> \n");
         sb.append("<a:posSecond:1324247766024589352> ").append("<@").append(players.get(1).getDiscordId()).append("> \n");
         sb.append("<a:posThird:1324247878188662795> ").append("<@").append(players.get(2).getDiscordId()).append(">");
 
-        TableGenerator tableGenerator = new TableGenerator(players, "/home/ubuntu/RookTownBot/images/leaderboard.png");
-        FileUpload image = FileUpload.fromData(new File("/home/ubuntu/RookTownBot/images/leaderboard.png"), "leaderboard.png");
+
+        TableGenerator tableGenerator = new TableGenerator(players, getProperty("LEADERBOARD.IMAGES.PATH"));
+        Path path = tableGenerator.generateTable();
+        FileUpload image = FileUpload.fromData(path);
 
         MessageEmbed embed = new EmbedBuilder()
                 .setTitle("Leaderboard")
                 .setDescription(sb.toString())
                 .setColor(Color.CYAN)
-                .setImage("attachment://leaderboard.png")
-                .setFooter(event.getUser().getName())
+                .setImage("attachment://" + path.getFileName().toString())
                 .build();
 
         event.getHook().sendMessageEmbeds(embed).addFiles(image).queue();

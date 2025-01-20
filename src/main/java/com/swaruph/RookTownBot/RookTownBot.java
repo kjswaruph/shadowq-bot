@@ -1,7 +1,9 @@
 package com.swaruph.RookTownBot;
 
 
-import com.swaruph.RookTownBot.actions.RoleUpdate;
+import com.swaruph.RookTownBot.database.QueueDB;
+import com.swaruph.RookTownBot.database.RookDB;
+import com.swaruph.RookTownBot.events.RoleUpdateonMemberJoin;
 import com.swaruph.RookTownBot.commands.GetStarted;
 import com.swaruph.RookTownBot.commands.Leaderboard;
 import com.swaruph.RookTownBot.commands.Purge;
@@ -21,14 +23,19 @@ public class RookTownBot extends ListenerAdapter {
     private static RookTownBot instance;
     
     private final JDA jda;
+
+    public static RookDB rookDB;
+    public static QueueDB queueDB;
     
     public RookTownBot(){
 
+        rookDB = new RookDB();
+        queueDB = new QueueDB();
         final GetStarted getStarted = new GetStarted();
         final StartQueue startQueue = new StartQueue();
         final Leaderboard leaderboard = new Leaderboard();
         final Purge purge = new Purge();
-        final RoleUpdate roleUpdate = new RoleUpdate();
+        final RoleUpdateonMemberJoin roleUpdateonMemberJoin = new RoleUpdateonMemberJoin();
 
         final CommandManager commandManager = new CommandManager();
         commandManager.addCommands(getStarted, startQueue, leaderboard, purge);
@@ -37,7 +44,7 @@ public class RookTownBot extends ListenerAdapter {
         jda = JDABuilder.createDefault(discordConfig.getToken())
                         .enableIntents(GatewayIntent.GUILD_MESSAGES,GatewayIntent.GUILD_MESSAGE_REACTIONS,GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                         .addEventListeners(commandManager, startQueue, getStarted)
-                        .addEventListeners(roleUpdate)
+                        .addEventListeners(roleUpdateonMemberJoin)
                         .setActivity(Activity.watching("RookTown"))
                         .build();
         instance = this;

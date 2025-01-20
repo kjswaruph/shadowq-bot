@@ -4,16 +4,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.swaruph.RookTownBot.database.RookDB;
 import com.swaruph.RookTownBot.model.Leaderboard;
 import com.swaruph.RookTownBot.model.LeaderboardPlayer;
 
+import static com.swaruph.RookTownBot.RookTownBot.rookDB;
+
 public class LeaderboardManager {
 
-    private final RookDB rookDB;
-    public LeaderboardManager(RookDB rookDB) {
-        this.rookDB = rookDB;
-    }
     public void updateLeaderboardStats(List<LeaderboardPlayer> allPlayers) throws IOException {
         for (LeaderboardPlayer player : allPlayers) {
             LeaderboardPlayer leaderboardPlayer = rookDB.getLeaderboardPlayer(player.getPuuid());
@@ -25,8 +22,6 @@ public class LeaderboardManager {
             rookDB.updateLeaderboardStats(leaderboardPlayer);
         }
     }
-
-   // Player x |  Agents x  |  Rounds x  |  Rating x |  ACS x  |  KDA  |  KAST  |  ADR  |  KPR  |  APR  |  FKPR  |  FDPR  |  HS%  |  CL%  |  CL  |  KMAX  |  Kills  |  Deaths  |  Assists  |  Wins  |  FK  |  FD
 
     private void updateStatsFromMatch(LeaderboardPlayer player, LeaderboardPlayer leaderboardPlayer) {
         leaderboardPlayer.setLeaderboardPlayerName(player.getLeaderboardPlayerName());

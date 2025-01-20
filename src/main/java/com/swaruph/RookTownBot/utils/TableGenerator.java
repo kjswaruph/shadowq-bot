@@ -1,7 +1,10 @@
-package com.swaruph.RookTownBot.actions;
+package com.swaruph.RookTownBot.utils;
 
 
 import java.io.File;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.swaruph.RookTownBot.model.Leaderboard;
@@ -13,33 +16,32 @@ import guru.nidi.graphviz.parse.Parser;
 
 public class TableGenerator{
 
-    private String tableType;
+    private final String tableType;
     private List<ScoreboardPlayer> teamA;
     private List<ScoreboardPlayer> teamB;
     private List<Leaderboard> leaderboardPlayers;
-    private String outputFileName;
+    private final String outputFileName;
 
     public TableGenerator(List<ScoreboardPlayer> teamA, List<ScoreboardPlayer> teamB, String outputFileName) {
         this.tableType = "scoreboard";
         this.teamA = teamA;
         this.teamB = teamB;
         this.outputFileName = outputFileName;
-        generateTable();
     }
 
     public TableGenerator(List<Leaderboard> leaderboardPlayers, String outputFileName) {
         this.tableType = "leaderboard";
         this.leaderboardPlayers = leaderboardPlayers;
-        this.outputFileName = outputFileName;
-        generateTable();
+        this.outputFileName = outputFileName+getOutputFileName();
     }
 
-    public void generateTable() {
+    public Path generateTable() {
         if (tableType.equals("scoreboard")) {
             generateScoreboard();
         } else if (tableType.equals("leaderboard")) {
             generateLeaderboard();
         }
+        return Path.of(outputFileName);
     }
 
     private void generateLeaderboard() {
@@ -180,6 +182,13 @@ public class TableGenerator{
         double kda = (player.getKills() + player.getAssists()) /
                 (double) (player.getDeaths() == 0 ? 1 : player.getDeaths());
         return String.format("%.1f", kda);
+    }
+
+    private String getOutputFileName(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        String formattedDateTime = "_"+now.format(formatter)+".png";
+        return formattedDateTime;
     }
 }
 

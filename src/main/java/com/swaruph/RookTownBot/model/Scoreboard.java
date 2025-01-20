@@ -3,6 +3,7 @@ package com.swaruph.RookTownBot.model;
 
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -13,19 +14,20 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import com.swaruph.RookTownBot.RookTownBot;
-import com.swaruph.RookTownBot.actions.TableGenerator;
-import com.swaruph.RookTownBot.database.RookDB;
+import com.swaruph.RookTownBot.utils.TableGenerator;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 
+import static com.swaruph.RookTownBot.RookTownBot.rookDB;
+import static com.swaruph.RookTownBot.config.ConfigLoader.getProperty;
 
 public class Scoreboard{
     private String matchId;
-    private int queueId;
+    private final int queueId;
     private final CustomMatch customMatch;
     private final List<LeaderboardPlayer> leaderboardPlayers;
-    private List<Rook> winningRooks;
-    private List<Rook> losingRooks;
+    private final List<Rook> winningRooks;
+    private final List<Rook> losingRooks;
     private String mvp;
     private final JDA jda = RookTownBot.getInstance().getJDA();
 
@@ -124,7 +126,6 @@ public class Scoreboard{
         Map<String, Integer> roundsPlayers = customMatch.
                 getRoundsPlayed(matchId);
         boolean isRedWin = false;
-        RookDB rookDB = new RookDB();
         if(customMatch.winningTeam(matchId).equals("Red")){
             isRedWin = true;
         }
@@ -179,20 +180,13 @@ public class Scoreboard{
                 }
             }
         }
-        Collections.sort(winTeamPlayers, Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
-        Collections.sort(loseTeamPlayers, Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
+        winTeamPlayers.sort(Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
+        loseTeamPlayers.sort(Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
 
-        TableGenerator tableGenerator = new TableGenerator(winTeamPlayers, loseTeamPlayers, "/home/ubuntu/RookTownBot/images/scoreboard_"+queueId+".png");
+        TableGenerator tableGenerator = new TableGenerator(winTeamPlayers, loseTeamPlayers, getProperty("SCOREBOARD.IMAGES.PATH")+queueId+".png");
+        tableGenerator.generateTable();
     }
 
-
-    public List<Rook> getWinningRooks() {
-        return winningRooks;
-    }
-
-    public List<Rook> getLosingRooks() {
-        return losingRooks;
-    }
 
     public List<LeaderboardPlayer> getLeaderboardPlayers(){
         return this.leaderboardPlayers;

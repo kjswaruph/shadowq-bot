@@ -10,7 +10,7 @@ public class Queue {
     private int queueId;
     private String queueName;
     private String queueType;
-    private String queueStatus;
+    private boolean queueStatus;
     private User queueAdmin;
     private List<Rook> queueMembers;
     private final int capacity = 10 ;
@@ -44,11 +44,11 @@ public class Queue {
         this.queueType = queueType;
     }
 
-    public String getQueueStatus() {
+    public boolean getQueueStatus() {
         return queueStatus;
     }
 
-    public void setQueueStatus(String queueStatus) {
+    public void setQueueStatus(boolean queueStatus) {
         this.queueStatus = queueStatus;
     }
 
