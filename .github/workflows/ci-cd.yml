@@ -36,9 +36,4 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          ssh -i "$SSH_PRIVATE_KEY" ubuntu@<EC2-PUBLIC-IP> << EOF
-          cd /home/ubuntu/RookTownBot
-          git pull origin main
-          pkill -f 'java -jar'
-          nohup java -jar RookTownBot.jar &
-          EOF  
+          ssh -i "$SSH_PRIVATE_KEY" ubuntu@ec2-65-0-97-88.ap-south-1.compute.amazonaws.com "cd /path/to/bot && git pull origin main && pkill -f 'java -jar' && nohup java -jar bot.jar &"
