@@ -1,6 +1,7 @@
 package com.swaruph.RookTownBot;
 
 
+import com.swaruph.RookTownBot.commands.Help;
 import com.swaruph.RookTownBot.database.QueueDB;
 import com.swaruph.RookTownBot.database.RookDB;
 import com.swaruph.RookTownBot.events.RoleUpdateonMemberJoin;
@@ -36,9 +37,9 @@ public class RookTownBot extends ListenerAdapter {
         final Leaderboard leaderboard = new Leaderboard();
         final Purge purge = new Purge();
         final RoleUpdateonMemberJoin roleUpdateonMemberJoin = new RoleUpdateonMemberJoin();
-
+        final Help help = new Help();
         final CommandManager commandManager = new CommandManager();
-        commandManager.addCommands(getStarted, startQueue, leaderboard, purge);
+        commandManager.addCommands(getStarted, startQueue, leaderboard, purge, help);
 
         DiscordConfig discordConfig = new DiscordConfig();
         jda = JDABuilder.createDefault(discordConfig.getToken())
