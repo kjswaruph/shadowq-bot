@@ -36,4 +36,4 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          ssh -i "$SSH_PRIVATE_KEY" ubuntu@65-0-97-88 "cd /path/to/bot && git pull origin main && pkill -f 'java -jar' && nohup java -jar bot.jar &"
+          ssh -i "$SSH_PRIVATE_KEY" ubuntu@65.0.97.88 "cd /path/to/bot && git pull origin main && pkill -f 'java -jar' && nohup java -jar bot.jar &"
