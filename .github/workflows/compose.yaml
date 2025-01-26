@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .
+    image: swaruph4/rooktownbot:latest
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+      HENRIKDEV_API_KEY: ${HENRIKDEV_API_KEY}
+    secrets:
+      - discord_bot_token
+      - henrikdev_api_key
+secrets:
+  discord_bot_token:
+    file: discord_bot_token.txt
+  henrikdev_api_key:
+    file: henrikdev_api_key.txt
+

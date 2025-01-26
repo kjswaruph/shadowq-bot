@@ -7,22 +7,25 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
       - name: Login DockerHub
         env:
-          DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-        run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-      - name: Build the Docker image
-        run: docker build -t rooktownbot .
-      - name: Tag the Docker image
-        run: docker tag rooktownbot swaruph4/rooktownbot:latest
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          tags: swaruph4/rooktownbot:latest
+          secrets: |
+            "DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}"
+            "HENRIKDEV_API_KEY=${{ secrets.HENRIKDEV_API_KEY }}"
+
       - name: Push to DockerHub
         run: docker push swaruph4/rooktownbot:latest
