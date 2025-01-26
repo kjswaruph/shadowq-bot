@@ -27,3 +27,4 @@ WORKDIR /bot
 COPY --link --from=build /bot/build/libs/rooktownbot.jar ./rooktownbot.jar
 VOLUME ["/bot/db", "/bot/images/leaderboard", "/bot/images/scoreboard"]
 ENTRYPOINT [ "java", "-jar", "rooktownbot.jar" ]
+
