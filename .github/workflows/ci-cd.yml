@@ -35,5 +35,4 @@ jobs:
       - name: Deploy to AWS EC2
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          ssh -i "$SSH_PRIVATE_KEY" ubuntu@ec2-65-0-97-88.ap-south-1.compute.amazonaws.com 
+        run: ssh -i "$SSH_PRIVATE_KEY" ubuntu@ec2-65-0-97-88.ap-south-1.compute.amazonaws.com 
