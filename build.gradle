@@ -12,7 +12,7 @@ application.mainClass = "com.swaruph.RookTownBot.RookTownBot"
 
 
 shadowJar {
-    archiveFileName = 'RookTownBot.jar'
+    archiveFileName = 'rooktownbot.jar'
 }
 
 repositories {
