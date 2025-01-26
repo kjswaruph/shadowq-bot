@@ -11,7 +11,7 @@ public class ConfigLoader {
     private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
 
     private static ConfigLoader instance;
-    private Properties properties;
+    private final Properties properties;
 
     private ConfigLoader() {
         properties = new Properties();
