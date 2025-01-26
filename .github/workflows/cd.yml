@@ -1,0 +1,26 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI pipeline"]
+    types:
+      - completed
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+      - name: Pull the Docker image
+        run: sudo docker pull swaruph4/rooktownbot:latest
+
+      - name: Stop the running container
+        run: sudo docker stop rooktownbot-container || true
+
+      - name: Remove the container
+        run: sudo docker rm -f rooktownbot-container || true
+
+      - name: Run the Docker container
+        run: sudo docker run -d --name rooktownbot-container swaruph4/rooktownbot:latest
