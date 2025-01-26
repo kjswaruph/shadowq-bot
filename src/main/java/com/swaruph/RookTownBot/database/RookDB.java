@@ -27,14 +27,32 @@ public class RookDB {
     public void createRookTable() {
         String query = """
                 CREATE TABLE IF NOT EXISTS rook (
-                rook_id integer PRIMARY KEY,
-                riot_id text NOT NULL,
-                gender text ,
-                age integer,
-                rook_rank text,
-                in_game_role text,
-                in_game_rank text,
-                agent_pool text
+                    puuid TEXT PRIMARY KEY,
+                    discord_id TEXT,
+                    name TEXT,
+                    agents TEXT,
+                    totalRounds INTEGER,
+                    totalMatches INTEGER,
+                    rating REAL,
+                    ACS REAL,
+                    KDA REAL,
+                    KAST INTEGER,
+                    ADR REAL,
+                    KPR REAL,
+                    APR REAL,
+                    FKPR REAL,
+                    FDPR REAL,
+                    HS INTEGER,
+                    CL INTEGER,
+                    CLWP REAL,
+                    KMAX INTEGER,
+                    kills INTEGER,
+                    deaths INTEGER,
+                    assists INTEGER,
+                    FK INTEGER,
+                    FD INTEGER,
+                    wins INTEGER,
+                    loses INTEGER
                 );
         """;
 
