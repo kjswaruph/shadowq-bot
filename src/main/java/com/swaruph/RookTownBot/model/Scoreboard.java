@@ -166,7 +166,7 @@ public class Scoreboard{
         winTeamPlayers.sort(Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
         loseTeamPlayers.sort(Comparator.comparingInt(ScoreboardPlayer::getACS).reversed());
 
-        TableGenerator tableGenerator = new TableGenerator(winTeamPlayers, loseTeamPlayers, ConfigLoader.getInstance().getProperty("SCOREBOARD.IMAGES.PATH")+queueId+".png");
+        TableGenerator tableGenerator = new TableGenerator(winTeamPlayers, loseTeamPlayers, ConfigLoader.getInstance().getProperty("SCOREBOARD_IMAGES_PATH")+queueId+".png");
         tableGenerator.generateTable();
     }
 

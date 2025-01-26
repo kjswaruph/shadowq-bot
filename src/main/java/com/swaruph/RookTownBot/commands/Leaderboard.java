@@ -55,7 +55,7 @@ public class Leaderboard implements ICommand {
         sb.append("<a:posThird:1324247878188662795> ").append("<@").append(players.get(2).getDiscordId()).append(">");
 
 
-        TableGenerator tableGenerator = new TableGenerator(players, ConfigLoader.getInstance().getProperty("LEADERBOARD.IMAGES.PATH"));
+        TableGenerator tableGenerator = new TableGenerator(players, ConfigLoader.getInstance().getProperty("LEADERBOARD_IMAGES_PATH"));
         Path path = tableGenerator.generateTable();
         FileUpload image = FileUpload.fromData(path);
 

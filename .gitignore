@@ -44,6 +44,7 @@ gradle-wrapper.jar
 gradle.properties
 gradle-local.properties
 local.properties
+.env
 
 # Ignore the dependency cache, which is not necessary to commit
 **/.gradle

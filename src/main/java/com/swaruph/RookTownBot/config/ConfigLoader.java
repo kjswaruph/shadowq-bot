@@ -1,29 +1,14 @@
 package com.swaruph.RookTownBot.config;
 
-import java.io.InputStream;
-import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class ConfigLoader {
 
-    private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
-
     private static ConfigLoader instance;
-    private final Properties properties;
+    private final Dotenv dotenv;
 
-    private ConfigLoader() {
-        properties = new Properties();
-        try (InputStream input = ConfigLoader.class.getResourceAsStream("/config.properties")) {
-            if (input == null) {
-                throw new RuntimeException("config.properties file not found in the classpath.");
-            }
-            properties.load(input);
-        } catch (Exception e) {
-            logger.error("Failed to load configuration", e);
-            throw new RuntimeException("Unable to load configuration.", e);
-        }
+    private ConfigLoader(){
+        dotenv = Dotenv.load();
     }
 
     public static ConfigLoader getInstance() {
@@ -34,6 +19,6 @@ public class ConfigLoader {
     }
 
     public String getProperty(String key) {
-        return properties.getProperty(key);
+        return dotenv.get(key);
     }
 }
