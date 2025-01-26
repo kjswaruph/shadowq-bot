@@ -4,9 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class LeaderboardPlayer {
-    /*
-    Player  |  Agents  |  Rounds  |  Rating  |  ACS  |  KDA  |  KAST  |  ADR  |  KPR  |  APR  |  FKPR  |  FDPR  |  HS%  |  CL%  |  CL  |  KMAX  |  Kills  |  Deaths  |  Assists  |  Wins  |  FK  |  FD
-    */
+
     private final String puuid;
     private String discordId;
     private String leaderboardPlayerName;
