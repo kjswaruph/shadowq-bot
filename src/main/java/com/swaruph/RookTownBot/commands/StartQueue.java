@@ -123,15 +123,15 @@ public class StartQueue extends ListenerAdapter implements ICommand {
                                                         .addPermissionOverride(event.getGuild().getMember(event.getUser()), permissions, null).complete();
                     Invite invite = voiceChannel.createInvite().complete();
                     inviteUrl = invite.getUrl();
-                    joinVC = Button.link(inviteUrl, "Join VC");
 
                     pollData = pollMap();
-
                     voiceChannel.sendMessagePoll(pollData).queue();
                 }
-
-                joinVC = Button.link(inviteUrl, "Join VC");
-
+                if (inviteUrl != null) {
+                    joinVC = Button.link(inviteUrl, "Join VC");
+                } else {
+                    joinVC = Button.link("https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getGuild().getVoiceChannelsByName(queueName, true).getFirst().getId(), "Join VC");
+                }
                 Button finalJoinVC = joinVC;
                 event.deferEdit().queue(hook -> {
                     hook.editOriginalEmbeds(new EmbedBuilder()
