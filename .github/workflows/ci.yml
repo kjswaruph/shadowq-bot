@@ -24,4 +24,4 @@ jobs:
         run: docker build -t rooktownbot .
 
       - name: Push the Docker image
-        run: docker push swaruph4/rooktownbot:latest
+        run: docker push swaruph4/rooktownbot
