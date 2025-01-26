@@ -22,5 +22,7 @@ jobs:
 
       - name: Build the Docker image
         run: docker build -t rooktownbot .
+      - name: Tag the Docker image
+        run: docker tag rooktownbot swaruph4/rooktownbot:latest
       - name: Push to DockerHub
         run: docker push swaruph4/rooktownbot:latest
