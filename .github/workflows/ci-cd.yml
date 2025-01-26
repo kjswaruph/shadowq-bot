@@ -24,6 +24,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
@@ -36,4 +37,9 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          ssh -i "$SSH_PRIVATE_KEY" ubuntu@65.0.97.88 "cd /path/to/bot && git pull origin main && pkill -f 'java -jar' && nohup java -jar bot.jar &"
+          ssh -i "$SSH_PRIVATE_KEY" ubuntu@<EC2-PUBLIC-IP> << EOF
+          cd /home/ubuntu/RookTownBot
+          git pull origin main
+          pkill -f 'java -jar'
+          nohup java -jar RookTownBot.jar &
+          EOF  
