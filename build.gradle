@@ -40,6 +40,12 @@ compileJava {
     sourceCompatibility = "21"
 }
 
+processResources {
+    from("src/main/resources") {
+        include "**/*.properties"
+    }
+}
+
 test {
     useJUnitPlatform()
 }
