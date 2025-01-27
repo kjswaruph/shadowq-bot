@@ -16,16 +16,13 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        run: docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
 
       - name: Build Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          tags: swaruph4/rooktownbot:latest
-          secrets: |
-            "DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}"
-            "HENRIKDEV_API_KEY=${{ secrets.HENRIKDEV_API_KEY }}"
+        run: docker build -t swaruph4/rooktownbot .
+
+      - name: Tag Docker image
+        run: docker tag swaruph4/rooktownbot swaruph4/rooktownbot:latest
 
       - name: Push to DockerHub
         run: docker push swaruph4/rooktownbot:latest

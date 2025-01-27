@@ -1,0 +1,14 @@
+version: '3'
+services:
+  rooktownbot:
+    image: swaruph4/rooktownbot:latest
+    volumes:
+      - ./db:/bot/db
+      - ./images/leaderboard:/bot/images/leaderboard
+      - ./images/scoreboard:/bot/images/scoreboard
+    environment:
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
+      - HENRIKDEV_API_KEY=${HENRIKDEV_API_KEY}
+      - BOT_DB_PATH=/bot/db
+      - BOT_LEADERBOARD_PATH=/bot/images/leaderboard
+      - BOT_SCOREBOARD_PATH=/bot/images/scoreboard
