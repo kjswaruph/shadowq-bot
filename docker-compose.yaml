@@ -1,7 +1,8 @@
-version: '3'
 services:
   rooktownbot:
     image: swaruph4/rooktownbot:latest
+    container_name: rooktownbot-container
+    restart: unless-stopped
     volumes:
       - ./db:/bot/db
       - ./images/leaderboard:/bot/images/leaderboard
