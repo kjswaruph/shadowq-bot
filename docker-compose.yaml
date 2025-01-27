@@ -9,6 +9,6 @@ services:
     environment:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
       - HENRIKDEV_API_KEY=${HENRIKDEV_API_KEY}
-      - BOT_DB_PATH=/bot/db
-      - BOT_LEADERBOARD_PATH=/bot/images/leaderboard
-      - BOT_SCOREBOARD_PATH=/bot/images/scoreboard
+      - DATABASE_URL=jdbc:sqlite:/bot/db/RookTownBotDB
+      - LEADERBOARD_IMAGES_PATH=/bot/images/leaderboard
+      - SCOREBOARD_IMAGES_PATH=/bot/images/scoreboard

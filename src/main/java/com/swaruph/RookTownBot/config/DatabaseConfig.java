@@ -12,12 +12,12 @@ public class DatabaseConfig {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseConfig.class);
 
     public Connection connect() {
-        String url = ConfigLoader.getInstance().getProperty("DB.URL");
+        String url = ConfigLoader.getInstance().getProperty("DATABASE_URL");
         Connection con;
         try{
             con = DriverManager.getConnection(url);
         }catch (SQLException e){
-            logger.error("Failed to connect to the database", e);
+            logger.error("Failed to connect to the database. URL: "+url, e);
             throw new RuntimeException("Failed to connect to the database", e);
         }
         return con;
