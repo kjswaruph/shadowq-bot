@@ -209,7 +209,7 @@ public class StartQueue extends ListenerAdapter implements ICommand {
                         hook.sendMessage("Queue ended").setEphemeral(true).queue();
                         TextChannel resultChannel = Objects.requireNonNull(event.getGuild()).getTextChannelById(resultsChannelId);
 
-                        Path path = Path.of(ConfigLoader.getInstance().getProperty("SCOREBOARD.IMAGES.PATH") + queueId + ".png");
+                        Path path = Path.of(ConfigLoader.getInstance().getProperty("SCOREBOARD_IMAGES_PATH") + queueId + ".png");
                         FileUpload file = FileUpload.fromData(path);
                         MessageEmbed embed = new EmbedBuilder()
                                 .setTitle("Queue " + queue.getQueueId())

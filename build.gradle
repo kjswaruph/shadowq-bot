@@ -30,6 +30,7 @@ dependencies {
     implementation("io.github.socketc0nnection:jva:1.2")
     implementation("org.jsoup:jsoup:1.18.3")
     implementation 'guru.nidi:graphviz-java:0.18.1'
+    implementation 'io.github.cdimascio:dotenv-java:3.1.0'
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
@@ -38,6 +39,12 @@ compileJava {
     options.encoding = "UTF-8"
     options.incremental = true
     sourceCompatibility = "21"
+}
+
+processResources {
+    from("src/main/resources") {
+        include "**/*.properties"
+    }
 }
 
 test {
