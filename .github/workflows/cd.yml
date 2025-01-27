@@ -19,6 +19,8 @@ jobs:
         run: sudo docker stop rooktownbot-container || true
       - name: Remove the container
         run: sudo docker rm -f rooktownbot-container || true
+      - name: Debug workspace
+        run: ls -l $GITHUB_WORKSPACE
       - name: Run Docker compose
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
