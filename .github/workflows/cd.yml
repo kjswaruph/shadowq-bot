@@ -13,8 +13,6 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
       - name: Pull the Docker image
         run: sudo docker pull swaruph4/rooktownbot:latest
       - name: Stop the running container
