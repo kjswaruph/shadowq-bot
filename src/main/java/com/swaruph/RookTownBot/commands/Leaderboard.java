@@ -50,10 +50,24 @@ public class Leaderboard implements ICommand {
 
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<a:posFirst:1324247637792391250> ").append("<@").append(players.get(0).getDiscordId()).append("> \n");
-        sb.append("<a:posSecond:1324247766024589352> ").append("<@").append(players.get(1).getDiscordId()).append("> \n");
-        sb.append("<a:posThird:1324247878188662795> ").append("<@").append(players.get(2).getDiscordId()).append(">");
 
+        for (com.swaruph.RookTownBot.model.Leaderboard player : players) {
+            sb.append("<@").append(player.getDiscordId()).append("> ").append(player.getRating()).append("\n");
+        }
+        for (int i = 0; i < players.size(); i++) {
+            if(i>2){
+                break;
+            }
+            if (i==0){
+                sb.append("<a:posFirst:1324247637792391250> ").append("<@").append(players.get(0).getDiscordId()).append("> \n");
+            }
+            if (i==1){
+                sb.append("<a:posSecond:1324247766024589352> ").append("<@").append(players.get(1).getDiscordId()).append("> \n");
+            }
+            if (i==2){
+                sb.append("<a:posThird:1324247878188662795> ").append("<@").append(players.get(2).getDiscordId()).append(">");
+            }
+        }
 
         TableGenerator tableGenerator = new TableGenerator(players, ConfigLoader.getInstance().getProperty("LEADERBOARD_IMAGES_PATH"));
         Path path = tableGenerator.generateTable();

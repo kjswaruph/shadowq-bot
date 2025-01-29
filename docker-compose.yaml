@@ -1,13 +1,13 @@
 services:
   rooktownbot:
-    image: swaruph4/rooktownbot:latest
+    image: rooktownbot
     container_name: rooktownbot-container
     restart: unless-stopped
     env_file: .env
     volumes:
       - ./db:/bot/db
-      - ./images/leaderboard:/bot/images/leaderboard
-      - ./images/scoreboard:/bot/images/scoreboard
+      - ./images/leaderboard:/bot/images/leaderboard/leaderboard
+      - ./images/scoreboard:/bot/images/scoreboard/scoreboard
     environment:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
       - HENRIKDEV_API_KEY=${HENRIKDEV_API_KEY}

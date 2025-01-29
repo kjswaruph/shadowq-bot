@@ -26,8 +26,8 @@ jobs:
           echo "DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}" > .env
           echo "HENRIKDEV_API_KEY=${{ secrets.HENRIKDEV_API_KEY }}" >> .env
           echo "DATABASE_URL=jdbc:sqlite:/bot/db/RookTownBotDB" >> .env
-          echo "LEADERBOARD_IMAGES_PATH=/bot/images/leaderboard" >> .env
-          echo "SCOREBOARD_IMAGES_PATH=/bot/images/scoreboard" >> .env
+          echo "LEADERBOARD_IMAGES_PATH=/bot/images/leaderboard/leaderboard" >> .env
+          echo "SCOREBOARD_IMAGES_PATH=/bot/images/scoreboard/scoreboard" >> .env
       - name: Run Docker compose
         run: sudo docker compose up -d
 
