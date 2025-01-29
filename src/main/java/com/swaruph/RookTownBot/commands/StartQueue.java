@@ -215,7 +215,7 @@ public class StartQueue extends ListenerAdapter implements ICommand {
                                 .setTitle("Queue " + queue.getQueueId())
                                 .setDescription(customMatch.rounds() + "\n" + "Map: " + customMatch.getMatchMap() + "\n" + "Server: " + customMatch.getMatchRegion())
                                 .setColor(Color.CYAN)
-                                .setImage("attachment://scoreboard_" + queueId + ".png")
+                                .setImage("attachment://scoreboard" + queueId + ".png")
                                 .build();
 
                         resultChannel.sendFiles(file)
