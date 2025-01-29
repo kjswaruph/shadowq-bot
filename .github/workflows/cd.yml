@@ -31,4 +31,3 @@ jobs:
       - name: Run Docker compose
         run: sudo docker compose up -d
 
-
