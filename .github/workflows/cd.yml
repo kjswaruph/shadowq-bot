@@ -15,13 +15,14 @@ jobs:
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
-
       - name: Pull the Docker image
         run: sudo docker pull swaruph4/rooktownbot:latest
       - name: Stop the running container
         run: sudo docker stop rooktownbot-container || true
       - name: Remove the container
         run: sudo docker rm -f rooktownbot-container || true
+      - name: Debug workspace
+        run: ls -l $GITHUB_WORKSPACE
       - name: Run Docker compose
         env:
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
