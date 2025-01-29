@@ -30,3 +30,5 @@ jobs:
           echo "SCOREBOARD_IMAGES_PATH=/bot/images/scoreboard" >> .env
       - name: Run Docker compose
         run: sudo docker compose up -d
+
+
