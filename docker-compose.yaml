@@ -1,6 +1,6 @@
 services:
   rooktownbot:
-    image: rooktownbot
+    image: rooktownbot:latest
     container_name: rooktownbot-container
     restart: unless-stopped
     env_file: .env
