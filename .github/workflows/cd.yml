@@ -23,9 +23,12 @@ jobs:
         run: sudo docker rm -f rooktownbot-container || true
       - name: Debug workspace
         run: ls -l $GITHUB_WORKSPACE
+      - name: Create .env file
+        run: |
+          echo "DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}" > .env
+          echo "HENRIKDEV_API_KEY=${{ secrets.HENRIKDEV_API_KEY }}" >> .env
+          echo "DATABASE_URL=jdbc:sqlite:/bot/db/RookTownBotDB" >> .env
+          echo "LEADERBOARD_IMAGES_PATH=/bot/images/leaderboard" >> .env
+          echo "SCOREBOARD_IMAGES_PATH=/bot/images/scoreboard" >> .env
       - name: Run Docker compose
-        env:
-          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
-          HENRIKDEV_API_KEY: ${{ secrets.HENRIKDEV_API_KEY }}
-
         run: sudo docker compose up -d

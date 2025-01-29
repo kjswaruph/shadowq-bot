@@ -3,6 +3,7 @@ services:
     image: swaruph4/rooktownbot:latest
     container_name: rooktownbot-container
     restart: unless-stopped
+    env_file: .env
     volumes:
       - ./db:/bot/db
       - ./images/leaderboard:/bot/images/leaderboard
@@ -10,6 +11,6 @@ services:
     environment:
       - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
       - HENRIKDEV_API_KEY=${HENRIKDEV_API_KEY}
-      - DATABASE_URL=jdbc:sqlite:/bot/db/RookTownBotDB
-      - LEADERBOARD_IMAGES_PATH=/bot/images/leaderboard
-      - SCOREBOARD_IMAGES_PATH=/bot/images/scoreboard
+      - DATABASE_URL=${DATABASE_URL}
+      - LEADERBOARD_IMAGES_PATH=${LEADERBOARD_IMAGES_PATH}
+      - SCOREBOARD_IMAGES_PATH=${SCOREBOARD_IMAGES_PATH}

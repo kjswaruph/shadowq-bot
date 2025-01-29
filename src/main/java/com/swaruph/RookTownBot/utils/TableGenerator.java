@@ -30,7 +30,7 @@ public class TableGenerator{
         this.tableType = "scoreboard";
         this.teamA = teamA;
         this.teamB = teamB;
-        this.outputFileName = outputFileName;
+        this.outputFileName = "_"+outputFileName;
     }
 
     public TableGenerator(List<Leaderboard> leaderboardPlayers, String outputFileName) {
