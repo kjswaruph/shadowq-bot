@@ -18,7 +18,7 @@ jobs:
       - name: Stop the running container
         run: sudo docker stop rooktownbot-container || true
       - name: Remove the container
-        run: sudo docker rm -f rooktownbot-container || true
+        run: sudo docker rm -f rooktownbot-container || true      
       - name: Debug workspace
         run: ls -l $GITHUB_WORKSPACE
       - name: Create .env file
@@ -30,3 +30,5 @@ jobs:
           echo "SCOREBOARD_IMAGES_PATH=/bot/images/scoreboard" >> .env
       - name: Run Docker compose
         run: sudo docker compose up -d
+
+
