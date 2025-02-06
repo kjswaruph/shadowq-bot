@@ -1,0 +1,46 @@
+name: RookTownBot CI/CD
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Gradle
+        run: ./gradlew shadowJar
+
+      - name: Docker Build
+        run: docker build -t rooktownbot:latest .
+
+      - name: Stop and Remove Old Container
+        run: |
+          docker stop rooktownbot || true
+          docker rm rooktownbot || true
+
+      - name: Deploy Container
+        run: |
+          docker run -d \
+            --name rooktownbot \
+            --restart unless-stopped \
+            -e DISCORD_BOT_TOKEN="${{ secrets.DISCORD_BOT_TOKEN }}" \
+            -e HENRIKDEV_API_KEY="${{ secrets.HENRIKDEV_API_KEY }}" \
+            -e DATABASE_URL="jdbc:sqlite:/data/db/RookTownBotDB" \
+            -e LEADERBOARD_IMAGES_PATH="/data/leaderboards" \
+            -e SCOREBOARD_IMAGES_PATH="/data/scoreboards" \
+            -v /persistent/db:/data/db \
+            -v /persistent/leaderboards:/data/leaderboards \
+            -v /persistent/scoreboards:/data/scoreboards \
+            rooktownbot:latest
