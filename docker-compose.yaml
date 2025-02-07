@@ -5,12 +5,7 @@ services:
     restart: unless-stopped
     env_file: .env
     volumes:
-      - ./db:/bot/db
-      - ./images/leaderboard:/bot/images/leaderboard/
-      - ./images/scoreboard:/bot/images/scoreboard/
-    environment:
-      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN}
-      - HENRIKDEV_API_KEY=${HENRIKDEV_API_KEY}
-      - DATABASE_URL=${DATABASE_URL}
-      - LEADERBOARD_IMAGES_PATH=${LEADERBOARD_IMAGES_PATH}
-      - SCOREBOARD_IMAGES_PATH=${SCOREBOARD_IMAGES_PATH}
+      - /persistent/db:/resources/db
+      - /persistent/leaderboards:/resources/leaderboards
+      - /persistent/scoreboards:/resources/scoreboards
+

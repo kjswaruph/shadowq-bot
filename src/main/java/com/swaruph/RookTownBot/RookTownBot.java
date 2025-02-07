@@ -1,14 +1,14 @@
 package com.swaruph.RookTownBot;
 
 
-import com.swaruph.RookTownBot.commands.Help;
+import com.swaruph.RookTownBot.commands.util.Help;
 import com.swaruph.RookTownBot.database.QueueDB;
 import com.swaruph.RookTownBot.database.RookDB;
 import com.swaruph.RookTownBot.events.RoleUpdateonMemberJoin;
-import com.swaruph.RookTownBot.commands.GetStarted;
-import com.swaruph.RookTownBot.commands.Leaderboard;
-import com.swaruph.RookTownBot.commands.Purge;
-import com.swaruph.RookTownBot.commands.StartQueue;
+import com.swaruph.RookTownBot.commands.util.GetStarted;
+import com.swaruph.RookTownBot.commands.queue.Leaderboard;
+import com.swaruph.RookTownBot.commands.moderation.Purge;
+import com.swaruph.RookTownBot.commands.queue.StartQueue;
 import com.swaruph.RookTownBot.config.DiscordConfig;
 import com.swaruph.RookTownBot.manager.CommandManager;
 import net.dv8tion.jda.api.JDA;

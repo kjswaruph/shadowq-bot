@@ -1,4 +1,4 @@
-package com.swaruph.RookTownBot.commands;
+package com.swaruph.RookTownBot.commands.queue;
 
 import java.awt.Color;
 import java.io.IOException;
@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.swaruph.RookTownBot.commands.ICommand;
 import com.swaruph.RookTownBot.config.ConfigLoader;
 import com.swaruph.RookTownBot.config.ValorantConfig;
 import com.swaruph.RookTownBot.manager.LeaderboardManager;
@@ -31,8 +32,11 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.messages.MessagePollBuilder;
@@ -48,11 +52,14 @@ public class StartQueue extends ListenerAdapter implements ICommand {
 
     long resultsChannelId = 1318190080049025064L;
     private MessagePollData pollData;
+    private VoiceChannel voiceChannel;
+    private String partyCode;
 
     @NotNull
     @Override
     public CommandData getCommandData() {
-        return Commands.slash("start-queue", "Start a new queue");
+        OptionData partyId = new OptionData(OptionType.STRING, "party_code", "Enter the party code", true);
+        return Commands.slash("start-queue", "Start a new queue").addOptions(partyId);
     }
 
     @Override
@@ -80,6 +87,9 @@ public class StartQueue extends ListenerAdapter implements ICommand {
         Button leaveButton = Button.danger("leave-button-"+queue.getQueueId(), "Leave queue");
         Button endButton = Button.danger("end-button-"+queue.getQueueId(), "End queue");
 
+        OptionMapping partyCodeOption = event.getOption("party_code");
+        partyCode = partyCodeOption.getAsString();
+
         EmbedBuilder embed =  new EmbedBuilder()
                 .setTitle("Queue "+ queue.getQueueId())
                 .setDescription("")
@@ -101,6 +111,9 @@ public class StartQueue extends ListenerAdapter implements ICommand {
         int queueId = getNumberFromString(event.getComponentId());
         Queue queue = QueueManager.getInstance().getQueue(queueId);
 
+        Category category = event.getGuild().getCategoriesByName("Queue", true).getFirst();
+        String queueName = "queue-" + queue.getQueueId();
+
         if (queue == null) {
             event.reply("Queue not found.").setEphemeral(true).queue();
             return;
@@ -111,14 +124,15 @@ public class StartQueue extends ListenerAdapter implements ICommand {
         if(event.getComponentId().equals("join-button-"+queueId)) {
             if (!isRookInQueue(queue, rook)) {
                 addRookInQueue(queue, rook);
-                String queueName = "queue-" + queue.getQueueId();
 
-                Category category = event.getGuild().getCategoriesByName("Queue", true).getFirst();
+
+
                 Button joinVC;
                 String inviteUrl = null;
+
                 if (event.getGuild().getVoiceChannelsByName(queueName, true).isEmpty()) {
                     EnumSet<Permission> permissions = EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.VOICE_CONNECT);
-                    VoiceChannel voiceChannel = category.createVoiceChannel(queueName)
+                    voiceChannel = category.createVoiceChannel(queueName)
                                                         .addPermissionOverride(event.getGuild().getPublicRole(), null, permissions)
                                                         .addPermissionOverride(event.getGuild().getMember(event.getUser()), permissions, null).complete();
                     Invite invite = voiceChannel.createInvite().complete();
@@ -126,6 +140,10 @@ public class StartQueue extends ListenerAdapter implements ICommand {
 
                     pollData = pollMap();
                     voiceChannel.sendMessagePoll(pollData).queue();
+                    voiceChannel.sendMessageEmbeds(new EmbedBuilder()
+                            .setTitle("Party Code: " + partyCode)
+                            .setColor(Color.RED)
+                            .build()).queue();
                 }
                 if (inviteUrl != null) {
                     joinVC = Button.link(inviteUrl, "Join VC");
@@ -214,7 +232,7 @@ public class StartQueue extends ListenerAdapter implements ICommand {
                         MessageEmbed embed = new EmbedBuilder()
                                 .setTitle("Queue " + queue.getQueueId())
                                 .setDescription(customMatch.rounds() + "\n" + "Map: " + customMatch.getMatchMap() + "\n" + "Server: " + customMatch.getMatchRegion())
-                                .setColor(Color.CYAN)
+                                .setColor(Color.RED)
                                 .setImage("attachment://scoreboard" + queueId + ".png")
                                 .build();
 
@@ -224,6 +242,8 @@ public class StartQueue extends ListenerAdapter implements ICommand {
 
                         LeaderboardManager leaderboardManager = new LeaderboardManager();
                         leaderboardManager.updateLeaderboardStats(scoreboard.getLeaderboardPlayers());
+
+                        voiceChannel.delete().queue();
 
                     }catch (IOException ex) {
                         hook.sendMessage("An error occurred while processing the scoreboard.").setEphemeral(true).queue();
@@ -290,6 +310,7 @@ public class StartQueue extends ListenerAdapter implements ICommand {
         Emoji abyss = Emoji.fromFormatted("<:abyss:1331670250688614532>");
         Emoji ascent = Emoji.fromFormatted("<:ascent:1331670255579303936>");
         Emoji bind = Emoji.fromFormatted("<:bind:1331670259400314890>");
+        Emoji breeze = Emoji.fromFormatted("<:breeze:1334185113814040646>");
         Emoji fracture = Emoji.fromFormatted("<:fracture:1331670263372189857>");
         Emoji haven = Emoji.fromFormatted("<:haven:1331670267172356168>");
         Emoji icebox = Emoji.fromFormatted("<:icebox:1331670271517524009>");
@@ -297,6 +318,7 @@ public class StartQueue extends ListenerAdapter implements ICommand {
         Emoji pearl = Emoji.fromFormatted("<:pearl:1331670279579238450>");
         Emoji split = Emoji.fromFormatted("<:split:1331670284079595680>");
         Emoji sunset = Emoji.fromFormatted("<:sunset:1331670287665729639>");
+
 
         pollData = new MessagePollBuilder("Choose a map")
                 .addAnswer("Abyss", abyss)

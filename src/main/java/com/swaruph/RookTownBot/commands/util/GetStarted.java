@@ -1,9 +1,10 @@
-package com.swaruph.RookTownBot.commands;
+package com.swaruph.RookTownBot.commands.util;
 
 import java.awt.Color;
 import java.io.IOException;
 import java.util.List;
 
+import com.swaruph.RookTownBot.commands.ICommand;
 import com.swaruph.RookTownBot.config.ValorantConfig;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;

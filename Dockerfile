@@ -1,17 +1,11 @@
 FROM gradle:8-jdk21-alpine AS builder
 WORKDIR /app
-COPY --chown=gradle:gradle . .
+COPY --chown=gradle:gradle . /app
 RUN gradle shadowJar --no-daemon
 
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:21-jre AS run
 WORKDIR /app
-RUN apk add --no-cache sqlite graphviz
+RUN apt-get update && apt-get install -y graphviz
 COPY --from=builder /app/build/libs/rooktownbot.jar .
-COPY .env .
-RUN mkdir -p \
-    /data/db \
-    /data/leaderboards \
-    /data/scoreboards
-VOLUME ["/data/db", "/data/leaderboards", "/data/scoreboards"]
-CMD ["java", "-jar", "rooktownbot.jar"]
+ENTRYPOINT ["java", "-jar", "rooktownbot.jar"]
