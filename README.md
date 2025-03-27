@@ -1,6 +1,6 @@
-# 👾 RookTownBot
+# 👾 ShadowQBot
 
-RookTownBot is a Java-based Discord bot designed to manage queues for Valorant custom matches. It provides functionalities for players to join, leave, and end queues, as well as to display match results and update leaderboards.
+ShadowQBot is a Java-based Discord bot designed to manage queues for Valorant custom matches. It provides functionalities for players to join, leave, and end queues, as well as to display match results and update leaderboards.
 
 ## ✨ Features
 
