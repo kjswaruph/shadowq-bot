@@ -1,7 +1,8 @@
-package com.swaruph.RookTownBot.commands;
+package com.swaruph.RookTownBot.commands.util;
 
 import java.awt.Color;
 
+import com.swaruph.RookTownBot.commands.ICommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -26,7 +27,7 @@ public class Help implements ICommand {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setAuthor(" | Commands List", null, event.getUser().getAvatarUrl());
         embed.setDescription(description);
-        embed.setColor(Color.CYAN);
+        embed.setColor(Color.RED);
         embed.addField("General", "`help` `ping`", false);
         embed.addField("Account", "`get-started`", false);
         embed.addField("Queue", "`start-queue` `leaderboard`", false);

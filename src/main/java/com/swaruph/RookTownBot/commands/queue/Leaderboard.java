@@ -1,9 +1,10 @@
-package com.swaruph.RookTownBot.commands;
+package com.swaruph.RookTownBot.commands.queue;
 
 import java.awt.Color;
 import java.nio.file.Path;
 import java.util.List;
 
+import com.swaruph.RookTownBot.commands.ICommand;
 import com.swaruph.RookTownBot.config.ConfigLoader;
 import com.swaruph.RookTownBot.utils.TableGenerator;
 import com.swaruph.RookTownBot.manager.LeaderboardManager;
@@ -51,9 +52,6 @@ public class Leaderboard implements ICommand {
 
         StringBuilder sb = new StringBuilder();
 
-        for (com.swaruph.RookTownBot.model.Leaderboard player : players) {
-            sb.append("<@").append(player.getDiscordId()).append("> ").append(player.getRating()).append("\n");
-        }
         for (int i = 0; i < players.size(); i++) {
             if(i>2){
                 break;
@@ -76,7 +74,7 @@ public class Leaderboard implements ICommand {
         MessageEmbed embed = new EmbedBuilder()
                 .setTitle("Leaderboard")
                 .setDescription(sb.toString())
-                .setColor(Color.CYAN)
+                .setColor(Color.RED)
                 .setImage("attachment://" + path.getFileName().toString())
                 .build();
 

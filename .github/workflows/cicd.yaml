@@ -6,41 +6,39 @@ on:
 
 jobs:
   build-and-deploy:
+
     runs-on: self-hosted
-    environment: production
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build with Gradle
-        run: ./gradlew shadowJar
 
-      - name: Docker Build
-        run: docker build -t rooktownbot:latest .
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: swaruph4/rooktownbot:latest
 
       - name: Stop and Remove Old Container
         run: |
-          docker stop rooktownbot || true
-          docker rm rooktownbot || true
+          docker stop rooktownbot-container || true
+          docker rm -f rooktownbot-container || true
 
-      - name: Deploy Container
+      - name: Create .env file
         run: |
-          docker run -d \
-            --name rooktownbot \
-            --restart unless-stopped \
-            -e DISCORD_BOT_TOKEN="${{ secrets.DISCORD_BOT_TOKEN }}" \
-            -e HENRIKDEV_API_KEY="${{ secrets.HENRIKDEV_API_KEY }}" \
-            -e DATABASE_URL="jdbc:sqlite:/data/db/RookTownBotDB" \
-            -e LEADERBOARD_IMAGES_PATH="/data/leaderboards" \
-            -e SCOREBOARD_IMAGES_PATH="/data/scoreboards" \
-            -v /persistent/db:/data/db \
-            -v /persistent/leaderboards:/data/leaderboards \
-            -v /persistent/scoreboards:/data/scoreboards \
-            rooktownbot:latest
+          echo "DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}" > .env
+          echo "HENRIKDEV_API_KEY=${{ secrets.HENRIKDEV_API_KEY }}" >> .env
+          echo "DATABASE_URL=jdbc:sqlite:/resources/db/RookTownBotDB" >> .env
+          echo "LEADERBOARD_IMAGES_PATH=/resources/leaderboards" >> .env
+          echo "SCOREBOARD_IMAGES_PATH=/resources/scoreboards" >> .env
+
+      - name: Run compose file
+        run: docker-compose up -d

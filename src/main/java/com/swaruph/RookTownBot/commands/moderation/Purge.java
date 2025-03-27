@@ -1,7 +1,8 @@
-package com.swaruph.RookTownBot.commands;
+package com.swaruph.RookTownBot.commands.moderation;
 
 import java.util.Objects;
 
+import com.swaruph.RookTownBot.commands.ICommand;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
@@ -13,7 +14,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.jetbrains.annotations.NotNull;
 
-public class Purge implements ICommand{
+public class Purge implements ICommand {
 
     @NotNull
     @Override
